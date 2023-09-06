@@ -83,7 +83,6 @@
                                                 <constraint firstItem="80r-4s-iLl" firstAttribute="top" secondItem="X2P-Ym-Bci" secondAttribute="top" constant="4" id="I6l-gv-aQM"/>
                                                 <constraint firstAttribute="bottom" secondItem="80r-4s-iLl" secondAttribute="bottom" constant="4" id="IKE-Pl-RPM"/>
                                                 <constraint firstItem="80r-4s-iLl" firstAttribute="bottom" secondItem="3G6-wk-w3F" secondAttribute="bottom" constant="8" id="VHS-F4-UHT"/>
-                                                <constraint firstAttribute="trailing" secondItem="3G6-wk-w3F" secondAttribute="trailing" constant="249.5" id="a87-sK-LBN"/>
                                                 <constraint firstItem="3G6-wk-w3F" firstAttribute="leading" secondItem="80r-4s-iLl" secondAttribute="leading" constant="8" id="dGT-nK-3QP"/>
                                             </constraints>
                                         </tableViewCellContentView>
@@ -113,7 +112,7 @@
                     <navigationItem key="navigationItem" id="O2u-UN-sRC"/>
                     <connections>
                         <outlet property="tableView" destination="8SS-At-Ax3" id="gaZ-Lw-Q2O"/>
-                        <segue destination="Dp0-KU-DHa" kind="show" identifier="ShowSingleImage" id="aLw-hO-vnq"/>
+                        <segue destination="Dp0-KU-DHa" kind="presentation" identifier="ShowSingleImage" id="aLw-hO-vnq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -153,14 +152,14 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dl0-L7-QdW" userLabel="Exit button">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dl0-L7-QdW" userLabel="Exit button">
                                 <rect key="frame" x="315" y="95" width="44" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="hcV-6V-Vjn"/>
                                     <constraint firstAttribute="width" constant="44" id="lGS-eH-0FU"/>
                                 </constraints>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" image="Exit Button"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" image="Exit Button"/>
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="u8n-Xe-pxx"/>
@@ -212,26 +211,45 @@
         <!--Single Image View Controller-->
         <scene sceneID="6G4-OG-8KP">
             <objects>
-                <viewController id="Dp0-KU-DHa" customClass="SingleImageViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController modalPresentationStyle="fullScreen" id="Dp0-KU-DHa" customClass="SingleImageViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="knH-Jz-LM0">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="sDH-T2-jQv" userLabel="ImageView">
-                                <rect key="frame" x="0.0" y="94" width="375" height="635"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f4O-mI-szq" userLabel="Back Button">
+                                <rect key="frame" x="8" y="8" width="48" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="48" id="EOi-r9-Gck"/>
+                                    <constraint firstAttribute="height" constant="48" id="SBU-90-scb"/>
+                                </constraints>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" image="Back Button">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="clickBackButton:" destination="Dp0-KU-DHa" eventType="touchUpInside" id="hKI-7J-zss"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="NR1-aS-FfM"/>
                         <color key="backgroundColor" name="YPBlack"/>
                         <constraints>
-                            <constraint firstItem="sDH-T2-jQv" firstAttribute="top" secondItem="NR1-aS-FfM" secondAttribute="top" id="84L-m6-57D"/>
-                            <constraint firstItem="NR1-aS-FfM" firstAttribute="trailing" secondItem="sDH-T2-jQv" secondAttribute="trailing" id="A2f-ZR-b1y"/>
-                            <constraint firstItem="NR1-aS-FfM" firstAttribute="bottom" secondItem="sDH-T2-jQv" secondAttribute="bottom" id="AaP-mt-O9L"/>
-                            <constraint firstItem="sDH-T2-jQv" firstAttribute="leading" secondItem="NR1-aS-FfM" secondAttribute="leading" id="dul-CM-19N"/>
+                            <constraint firstItem="sDH-T2-jQv" firstAttribute="top" secondItem="knH-Jz-LM0" secondAttribute="top" id="84L-m6-57D"/>
+                            <constraint firstAttribute="trailing" secondItem="sDH-T2-jQv" secondAttribute="trailing" id="A2f-ZR-b1y"/>
+                            <constraint firstAttribute="bottom" secondItem="sDH-T2-jQv" secondAttribute="bottom" id="AaP-mt-O9L"/>
+                            <constraint firstItem="f4O-mI-szq" firstAttribute="top" secondItem="NR1-aS-FfM" secondAttribute="top" constant="8" id="S3j-av-C2o"/>
+                            <constraint firstItem="sDH-T2-jQv" firstAttribute="leading" secondItem="knH-Jz-LM0" secondAttribute="leading" id="dul-CM-19N"/>
+                            <constraint firstItem="f4O-mI-szq" firstAttribute="leading" secondItem="NR1-aS-FfM" secondAttribute="leading" constant="8" id="mgJ-Pw-miF"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="b1g-Xg-tFS"/>
                     <connections>
+                        <outlet property="backButton" destination="f4O-mI-szq" id="Qpj-4D-Yq4"/>
                         <outlet property="imageView" destination="sDH-T2-jQv" id="N7t-oG-K2e"/>
                     </connections>
                 </viewController>
@@ -242,6 +260,7 @@
     </scenes>
     <resources>
         <image name="0" width="200" height="132"/>
+        <image name="Back Button" width="9" height="16"/>
         <image name="Exit Button" width="20" height="22"/>
         <image name="UserPhoto" width="70" height="70"/>
         <image name="like_button_on" width="44" height="44"/>

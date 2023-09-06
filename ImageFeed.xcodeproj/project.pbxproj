@@ -62,11 +62,11 @@
 		984C5F672A73E87500A2E939 /* ImageFeed */ = {
 			isa = PBXGroup;
 			children = (
-				984C5FC02A754A9B00A2E939 /* ImagesList */,
+				98C2CB182AA8D72300EA7822 /* View Controllers */,
 				984C5F682A73E87500A2E939 /* AppDelegate.swift */,
 				984C5F6A2A73E87500A2E939 /* SceneDelegate.swift */,
 				984C5F6E2A73E87500A2E939 /* Main.storyboard */,
-				984C8EEB2AA3C64F0029EEC7 /* ProfileViewController.swift */,
+				984C5FBE2A754A3D00A2E939 /* ImagesListCell.swift */,
 				984C5F712A73E87700A2E939 /* Assets.xcassets */,
 				984C5F732A73E87700A2E939 /* LaunchScreen.storyboard */,
 				984C5F762A73E87700A2E939 /* Info.plist */,
@@ -74,14 +74,14 @@
 			path = ImageFeed;
 			sourceTree = "<group>";
 		};
-		984C5FC02A754A9B00A2E939 /* ImagesList */ = {
+		98C2CB182AA8D72300EA7822 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				984C5F6C2A73E87500A2E939 /* ImagesListViewController.swift */,
+				984C8EEB2AA3C64F0029EEC7 /* ProfileViewController.swift */,
 				984C8EED2AA639740029EEC7 /* SingleImageViewController.swift */,
-				984C5FBE2A754A3D00A2E939 /* ImagesListCell.swift */,
 			);
-			path = ImagesList;
+			path = "View Controllers";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
