@@ -6,7 +6,6 @@ final class SingleImageViewController: UIViewController {
     @IBAction func clickBackButton(_ sender: Any) {
         dismiss(animated: true)
     }
-    
     @IBOutlet var imageView: UIImageView! {
         didSet {
             guard isViewLoaded else { return }

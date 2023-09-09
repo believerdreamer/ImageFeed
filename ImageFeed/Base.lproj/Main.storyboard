@@ -222,6 +222,7 @@
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f4O-mI-szq" userLabel="Back Button">
                                 <rect key="frame" x="8" y="8" width="48" height="48"/>
+                                <accessibility key="accessibilityConfiguration" identifier="backButton"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="48" id="EOi-r9-Gck"/>
                                     <constraint firstAttribute="height" constant="48" id="SBU-90-scb"/>
@@ -232,7 +233,7 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
-                                    <action selector="clickBackButton:" destination="Dp0-KU-DHa" eventType="touchUpInside" id="hKI-7J-zss"/>
+                                    <action selector="clickBackButton:" destination="Dp0-KU-DHa" eventType="touchUpInside" id="9ig-RK-OOi"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -249,7 +250,6 @@
                     </view>
                     <navigationItem key="navigationItem" id="b1g-Xg-tFS"/>
                     <connections>
-                        <outlet property="backButton" destination="f4O-mI-szq" id="Qpj-4D-Yq4"/>
                         <outlet property="imageView" destination="sDH-T2-jQv" id="N7t-oG-K2e"/>
                     </connections>
                 </viewController>
