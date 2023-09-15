@@ -9,11 +9,15 @@ final class SingleImageViewController: UIViewController {
         dismiss(animated: true)
     }
     @IBAction func tapShareButton(_ sender: Any) {
-        let share = UIActivityViewController(activityItems: [image ?? UIImage()], applicationActivities: nil)
+        let share = UIActivityViewController(
+            activityItems: [image ?? UIImage()],
+            applicationActivities: nil)
         
         present(share, animated: true)
     }
+    
     @IBOutlet var imageView: UIImageView! {
+        
         didSet {
             guard isViewLoaded else { return }
             imageView.image = image
@@ -21,7 +25,7 @@ final class SingleImageViewController: UIViewController {
         }
     }
     
-    private func rescaleAndCenterImageInScrollView(image: UIImage){
+    private func rescaleAndCenterImageInScrollView(image: UIImage) {
         let minZoomScale = scrollView.minimumZoomScale
         let maxZoomScale = scrollView.maximumZoomScale
         view.layoutIfNeeded()
@@ -33,17 +37,23 @@ final class SingleImageViewController: UIViewController {
         scrollView.setZoomScale(scale, animated: false)
         scrollView.layoutIfNeeded()
         let newContentSize = scrollView.contentSize
-        let x = (newContentSize.width - visibleRectSize.width)
-        let y = (newContentSize.height - visibleRectSize.height)
+        let x = (newContentSize.width - visibleRectSize.width) / 2
+        let y = (newContentSize.height - visibleRectSize.height) / 2
         scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
     }
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         imageView.image = image
-        rescaleAndCenterImageInScrollView(image: image)
+        
+        
+        
         scrollView.minimumZoomScale = 0.25
         scrollView.maximumZoomScale = 1.25
+        
+        rescaleAndCenterImageInScrollView(image: image)
         
     }
 }
