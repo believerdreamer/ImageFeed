@@ -240,10 +240,10 @@
     </scenes>
     <resources>
         <image name="0" width="200" height="132"/>
-        <image name="Back Button" width="9" height="16"/>
+        <image name="Back Button" width="24" height="24"/>
         <image name="like_button_on" width="44" height="44"/>
         <image name="sharing_button" width="151" height="150"/>
-        <image name="tab_editorial_active" width="20" height="22"/>
+        <image name="tab_editorial_active" width="30" height="30"/>
         <image name="tab_profile_active" width="30" height="30"/>
         <namedColor name="YPBlack">
             <color red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
