@@ -2,13 +2,13 @@ import UIKit
 
 final class SingleImageViewController: UIViewController {
     var image: UIImage!
-
+    
     
     @IBOutlet private weak var scrollView: UIScrollView!
-    @IBAction func clickBackButton(_ sender: Any) {
+    @IBAction private func clickBackButton(_ sender: Any) {
         dismiss(animated: true)
     }
-    @IBAction func tapShareButton(_ sender: Any) {
+    @IBAction private func tapShareButton(_ sender: Any) {
         let share = UIActivityViewController(
             activityItems: [image ?? UIImage()],
             applicationActivities: nil)
@@ -41,14 +41,11 @@ final class SingleImageViewController: UIViewController {
         let y = (newContentSize.height - visibleRectSize.height) / 2
         scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
     }
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         imageView.image = image
-        
-        
         
         scrollView.minimumZoomScale = 0.25
         scrollView.maximumZoomScale = 1.25

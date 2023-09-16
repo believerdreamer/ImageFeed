@@ -2,9 +2,7 @@ import UIKit
 
 final class ProfileViewContoller: UIViewController{ //MARK: UIViewController
     
-    @objc func didTapButton() {
-        
-    }
+    @objc func didTapButton() {}
     
     //MARK: Lifecycle
     override func viewDidLoad() {
@@ -14,11 +12,10 @@ final class ProfileViewContoller: UIViewController{ //MARK: UIViewController
         configureNameLabel()
         configureNickname()
         configureDescription()
-        
     }
     
     func configureProfileImage() {
-    
+        
         let profileImage = UIImage(named: "UserPhoto")
         let imageView = UIImageView(image: profileImage)
         imageView.tintColor = .gray
@@ -55,8 +52,6 @@ final class ProfileViewContoller: UIViewController{ //MARK: UIViewController
         label.widthAnchor.constraint(equalToConstant: 241).isActive = true
         label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 110).isActive = true
         label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
-        
-        
     }
     
     func configureNickname() {
@@ -80,5 +75,5 @@ final class ProfileViewContoller: UIViewController{ //MARK: UIViewController
         label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
         label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 170).isActive = true
     }
-
+    
 }
