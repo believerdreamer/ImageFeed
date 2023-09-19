@@ -2,7 +2,7 @@ import UIKit
 
 final class ProfileViewContoller: UIViewController{ //MARK: UIViewController
     
-    @objc func didTapButton() {}
+    @objc private func didTapButton() {}
     
     //MARK: Lifecycle
     override func viewDidLoad() {
@@ -14,7 +14,7 @@ final class ProfileViewContoller: UIViewController{ //MARK: UIViewController
         configureDescription()
     }
     
-    func configureProfileImage() {
+    private func configureProfileImage() {
         
         let profileImage = UIImage(named: "UserPhoto")
         let imageView = UIImageView(image: profileImage)
@@ -27,7 +27,7 @@ final class ProfileViewContoller: UIViewController{ //MARK: UIViewController
         imageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
     }
     
-    func configureExitButton() {
+    private func configureExitButton() {
         let button = UIButton.systemButton(
             with: UIImage(systemName: "ipad.and.arrow.forward")!,
             target: self,
@@ -42,7 +42,7 @@ final class ProfileViewContoller: UIViewController{ //MARK: UIViewController
         button.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16).isActive = true
     }
     
-    func configureNameLabel() {
+    private func configureNameLabel() {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
@@ -54,7 +54,7 @@ final class ProfileViewContoller: UIViewController{ //MARK: UIViewController
         label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
     }
     
-    func configureNickname() {
+    private func configureNickname() {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
@@ -65,7 +65,7 @@ final class ProfileViewContoller: UIViewController{ //MARK: UIViewController
         label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
     }
     
-    func configureDescription() {
+    private func configureDescription() {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
