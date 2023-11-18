@@ -3,11 +3,19 @@ import WebKit
 
 fileprivate let UnsplashAuthorizeURLString: String = "https://unsplash.com/oauth/authorize"
 
+protocol WebViewViewControllerDegelate: AnyObject {
+    func webViewViewController(_vc: WebViewViewController, didAuthenticateWithCode code: String)
+    func webViewViewControllerDidCancel(_vc: WebViewViewController)
+}
+
 final class WebViewViewController: UIViewController {
+    
+    weak var delegate: WebViewViewControllerDegelate?
     
     @IBOutlet private var webView: WKWebView!
     
     @IBAction func didTapBackButton(_ sender: Any) {
+        delegate?.webViewViewControllerDidCancel(_vc: self)
     }
     
     override func viewDidLoad() {
@@ -56,7 +64,4 @@ extension WebViewViewController: WKNavigationDelegate {
 
 }
 
-protocol WebViewViewControllerDegelate {
-    func webViewViewController(_vc: WebViewViewController, didAuthenticateWithCode code: String)
-    func webViewViewControllerDidCancel(_vc: WebViewViewController)
-}
+
