@@ -8,14 +8,27 @@ protocol WebViewViewControllerDegelate: AnyObject {
     func webViewViewControllerDidCancel(_vc: WebViewViewController)
 }
 
+//UIViewController
 final class WebViewViewController: UIViewController {
     
     weak var delegate: WebViewViewControllerDegelate?
     
+    //@IBOutlets
     @IBOutlet private var webView: WKWebView!
+    @IBOutlet private var progressView: UIProgressView!
     
-    @IBAction func didTapBackButton(_ sender: Any) {
+    //@IBActions
+    @IBAction private func didTapBackButton(_ sender: Any) {
         delegate?.webViewViewControllerDidCancel(_vc: self)
+    }
+    //Lifecycle
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress))
     }
     
     override func viewDidLoad() {
@@ -31,6 +44,19 @@ final class WebViewViewController: UIViewController {
         let url = urlComponents.url!
         let request = URLRequest(url: url)
         webView.load(request)
+    }
+    
+    private func updateProgress() {
+        progressView.progress = Float(webView.estimatedProgress)
+        progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == #keyPath(WKWebView.estimatedProgress) {
+            updateProgress()
+        } else {
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+        }
     }
     
     private func code(from navigationAction: WKNavigationAction) -> String? {
@@ -61,7 +87,7 @@ extension WebViewViewController: WKNavigationDelegate {
             decisionHandler(.allow)
         }
     }
-
+    
 }
 
 
