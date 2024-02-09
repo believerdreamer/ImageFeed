@@ -1,8 +1,20 @@
 import UIKit
 
-final class ProfileViewContoller: UIViewController{ //MARK: UIViewController
+//MARK: UIViewController
+
+final class ProfileViewContoller: UIViewController{
     
-    @objc private func didTapButton() {}
+    private let userDefaults = UserDefaults.standard
+    private var token = OAuth2TokenStorage()
+    private let tokenStorage = OAuth2TokenStorage()
+    
+    @objc private func didTapButton() {
+        performSegue(withIdentifier: "ShowAuthScreen", sender: nil)
+        if tokenStorage.token != nil {
+            userDefaults.removeObject(forKey: "token")
+            
+        }
+    }
     
     //MARK: Lifecycle
     override func viewDidLoad() {
@@ -14,6 +26,7 @@ final class ProfileViewContoller: UIViewController{ //MARK: UIViewController
         configureDescription()
     }
     
+    //MARK: Configure screen objects
     private func configureProfileImage() {
         
         let profileImage = UIImage(named: "UserPhoto")

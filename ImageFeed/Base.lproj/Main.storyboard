@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22155" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="4MN-RD-LiI">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="UVX-2s-sfu">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -26,7 +26,7 @@
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qIV-QS-wHa" userLabel="Login button">
-                                <rect key="frame" x="16" y="640" width="343" height="48"/>
+                                <rect key="frame" x="16" y="674" width="343" height="48"/>
                                 <color key="backgroundColor" name="YPWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="c0Z-ts-isH"/>
@@ -62,12 +62,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mib-Ti-9FN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2032.8" y="-4.4334975369458132"/>
+            <point key="canvasLocation" x="1585" y="-497"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="34Z-Su-PWw">
             <objects>
-                <tabBarController id="iPg-7l-yMb" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TabBarViewController" id="iPg-7l-yMb" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Hbc-42-6MV">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -87,7 +87,7 @@
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qd6-UA-cUF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-176.80000000000001" y="-4.4334975369458132"/>
+            <point key="canvasLocation" x="-1719" y="622"/>
         </scene>
         <!--ImageList View Controller-->
         <scene sceneID="tne-QT-ifu">
@@ -172,7 +172,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1738.4000000000001" y="-290.39408866995075"/>
+            <point key="canvasLocation" x="-1719" y="2334"/>
         </scene>
         <!--Profile View Controller-->
         <scene sceneID="eK7-3Y-cAD">
@@ -185,10 +185,13 @@
                         <color key="backgroundColor" name="YPBlack"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="" image="tab_profile_active" id="hIn-AS-fIl"/>
+                    <connections>
+                        <segue destination="4MN-RD-LiI" kind="presentation" identifier="ShowAuthScreen" modalPresentationStyle="fullScreen" id="JQE-Jh-1aj"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fp8-Xk-fj4" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="796" y="500.98522167487687"/>
+            <point key="canvasLocation" x="-886" y="621"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="6Pe-Aw-G8U">
@@ -213,7 +216,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="q75-qt-TAF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="796" y="-290.39408866995075"/>
+            <point key="canvasLocation" x="-1719" y="1505"/>
         </scene>
         <!--Single Image View Controller-->
         <scene sceneID="6G4-OG-8KP">
@@ -293,7 +296,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mGP-wV-JRY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2556" y="-290.39408866995075"/>
+            <point key="canvasLocation" x="-828" y="2334"/>
         </scene>
         <!--Web View View Controller-->
         <scene sceneID="VP7-Ss-0ah">
@@ -326,6 +329,7 @@
                             </button>
                             <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="S5d-Hu-ds2">
                                 <rect key="frame" x="0.0" y="44" width="375" height="4"/>
+                                <color key="tintColor" name="YPBlack"/>
                                 <color key="progressTintColor" name="YPBlack"/>
                             </progressView>
                         </subviews>
@@ -334,7 +338,7 @@
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="Bpo-4I-Med" secondAttribute="trailing" id="7HW-AR-yhD"/>
                             <constraint firstItem="aoX-1C-fXT" firstAttribute="top" secondItem="ylR-vy-k99" secondAttribute="top" constant="11" id="7T3-zi-q49"/>
-                            <constraint firstItem="S5d-Hu-ds2" firstAttribute="leading" secondItem="ylR-vy-k99" secondAttribute="leading" id="9g9-SV-9Df"/>
+                            <constraint firstItem="S5d-Hu-ds2" firstAttribute="leading" secondItem="cmz-4d-o19" secondAttribute="leading" id="9g9-SV-9Df"/>
                             <constraint firstItem="aoX-1C-fXT" firstAttribute="leading" secondItem="ylR-vy-k99" secondAttribute="leading" constant="8" id="BFn-np-a9W"/>
                             <constraint firstAttribute="bottom" secondItem="Bpo-4I-Med" secondAttribute="bottom" id="Q6g-Vj-IGO"/>
                             <constraint firstItem="Bpo-4I-Med" firstAttribute="leading" secondItem="cmz-4d-o19" secondAttribute="leading" id="RVr-Lj-IfR"/>
@@ -350,15 +354,34 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3cb-Oa-ofs" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1156" y="-4.4334975369458132"/>
+            <point key="canvasLocation" x="1585" y="343"/>
+        </scene>
+        <!--Splash View Controller-->
+        <scene sceneID="Xl1-Gj-cBT">
+            <objects>
+                <viewController id="UVX-2s-sfu" customClass="SplashViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="p1I-FM-bee">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="SdH-9c-agM"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <connections>
+                        <segue destination="4MN-RD-LiI" kind="presentation" identifier="ShowAuthFlow" modalPresentationStyle="fullScreen" id="IP8-9h-G6V"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4VR-0X-5UI" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="273" y="-1340"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="bdP-gq-QAo">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="4MN-RD-LiI" sceneMemberID="viewController">
                     <toolbarItems/>
+                    <navigationItem key="navigationItem" id="Blg-wf-MDO"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="dWV-dG-SWu">
-                        <rect key="frame" x="0.0" y="50" width="375" height="44"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -368,9 +391,12 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rs7-8l-kXR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2975.1999999999998" y="-4.4334975369458132"/>
+            <point key="canvasLocation" x="274" y="-497"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="IP8-9h-G6V"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <image name="0" width="200" height="132"/>
         <image name="Back Button" width="24" height="24"/>
