@@ -1,9 +1,12 @@
 import Foundation
 
-let AccessKey: String = "vwr5PRpa51S1IQPr4V9xqJmOklAYZMvgVw0cOqpjsCs"
-let SecretKey: String = "CwzQKJ1r3DX-BpuuFoVgwgsQSLsvZjfm2lceOjk4v1g"
-let RedirectURI: String = "urn:ietf:wg:oauth:2.0:oob"
-let DefaultBaseURL: URL = URL(string: "https://api.unsplash.com/")!
-let AccessScope: String = "public+read_user+write_likes"
+enum Constants {
+    static let accessKey: String = "K6ujim4CuKUuEB6MNLIj49av69n-h6UJjHHc9ZDBnSU"
+    static let secretKey: String = "UNIaYqYPhBpC07JsR4Z903hWAT2VCZkpFU42ztfM2oY"
+    static let redirectURI: String = "urn:ietf:wg:oauth:2.0:oob"
+    static let defaultBaseURL: URL = URL(string: "https://api.unsplash.com")!
+    static let accessScope: String = "public+read_user+write_likes"
+}
+
 
 
