@@ -1,5 +1,6 @@
-import Foundation
+import ProgressHUD
 import UIKit
+
 
 final class SplashViewController: UIViewController {
     private let showAuthenticationScreenSegueIdentifier = "ShowAuthFlow"

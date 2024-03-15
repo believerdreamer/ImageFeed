@@ -14,14 +14,18 @@ extension URLRequest {
         urlString: String,
         parameters: [String: String],
         httpMethod: String
-    ) -> URLRequest {
+    ) -> URLRequest? {
+        guard URL(string: urlString) != nil else {
+            assertionFailure("Failed to create URL!")
+            return nil
+        }
+        
         var urlComponents = URLComponents(string: urlString)
         var queryItems: [URLQueryItem] = []
         for (key, value) in parameters {
             queryItems.append(URLQueryItem(name: key, value: value))
         }
         urlComponents?.queryItems = queryItems
-        
         var request = URLRequest(url: urlComponents!.url!)
         request.httpMethod = httpMethod
         return request
@@ -47,19 +51,21 @@ extension URLSession {
             }
         }
         let task = dataTask(with: request) { data, response, error in
-            if let data = data,
-               let response = response,
-               let statusCode = (response as? HTTPURLResponse)?.statusCode
-            {
-                if 200 ..< 300 ~= statusCode {
-                    fulfillCompletion(.success(data))
+            DispatchQueue.main.async {
+                if let data = data,
+                   let response = response,
+                   let statusCode = (response as? HTTPURLResponse)?.statusCode
+                {
+                    if 200 ..< 300 ~= statusCode {
+                        fulfillCompletion(.success(data))
+                    } else {
+                        fulfillCompletion(.failure(NetworkError.httpStatusCode(statusCode)))
+                    }
+                } else if let error = error {
+                    fulfillCompletion(.failure(NetworkError.urlRequestError(error)))
                 } else {
-                    fulfillCompletion(.failure(NetworkError.httpStatusCode(statusCode)))
+                    fulfillCompletion(.failure(NetworkError.urlSessionError))
                 }
-            } else if let error = error {
-                fulfillCompletion(.failure(NetworkError.urlRequestError(error)))
-            } else {
-                fulfillCompletion(.failure(NetworkError.urlSessionError))
             }
         }
         task.resume()
