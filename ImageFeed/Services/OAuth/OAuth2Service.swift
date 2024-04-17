@@ -6,8 +6,6 @@ private enum AuthServiceError: Error {
 
 final class OAuth2Service {
     
-    static let shared = OAuth2Service()
-    
     private var task: URLSessionTask?
     private var lastCode: String?
     
@@ -25,8 +23,7 @@ final class OAuth2Service {
         _ code: String,
         completion: @escaping (Result<String, Error>) -> Void
     ) {
-        assert(Thread.isMainThread)
-        
+        assert(Thread.isMainThread)        
         guard lastCode != code else {
             completion(.failure(AuthServiceError.invalidRequest))
             return

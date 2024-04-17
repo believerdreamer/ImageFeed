@@ -4,16 +4,22 @@ import UIKit
 
 final class ProfileViewContoller: UIViewController{
     
+    struct Profile {
+        var username: String
+        var name: String
+        var loginName: String
+        var bio: String
+    }
+    
+    var queue = DispatchQueue(label: "profile queue")
     private let userDefaults = UserDefaults.standard
-    private var token = OAuth2TokenStorage()
     private let tokenStorage = OAuth2TokenStorage()
+    private let profileService = ProfileService()
+    private var profileData: ProfileService.Profile?
     
     @objc private func didTapButton() {
         performSegue(withIdentifier: "ShowAuthScreen", sender: nil)
-        if tokenStorage.token != nil {
             userDefaults.removeObject(forKey: "token")
-            
-        }
     }
     
     //MARK: Lifecycle
@@ -21,10 +27,28 @@ final class ProfileViewContoller: UIViewController{
         super.viewDidLoad()
         configureProfileImage()
         configureExitButton()
-        configureNameLabel()
-        configureNickname()
-        configureDescription()
+        
+        if let token = tokenStorage.token {
+            profileService.fetchProfile(token: token) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let body):
+                    self.queue.async {
+                        self.profileData = body
+                        DispatchQueue.main.async {
+                            self.configureUIWithProfileData(data: body)
+                        }
+                    }
+                case .failure:
+                    assertionFailure("Не удалось получить профиль!")
+                }
+            }
+        } else {
+            assertionFailure("Токен отсутствует!")
+        }
     }
+        
+    
     
     //MARK: Configure screen objects
     private func configureProfileImage() {
@@ -55,11 +79,11 @@ final class ProfileViewContoller: UIViewController{
         button.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16).isActive = true
     }
     
-    private func configureNameLabel() {
+    private func configureNameLabel(with text: ProfileService.Profile) {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
-        label.text = "Екатерина Новикова"
+        label.text = profileData?.name
         label.font = UIFont.boldSystemFont(ofSize: 23)
         label.textColor = .white
         label.widthAnchor.constraint(equalToConstant: 241).isActive = true
@@ -67,26 +91,32 @@ final class ProfileViewContoller: UIViewController{
         label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
     }
     
-    private func configureNickname() {
+    private func configureNickname(with text: ProfileService.Profile) {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
-        label.text = "@ekaterina_nov"
+        label.text = "@" + (profileData?.username ?? "")
         label.font = UIFont.systemFont(ofSize: 13)
         label.textColor = UIColor(named: "YPGrey")
         label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 144).isActive = true
         label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
     }
     
-    private func configureDescription() {
+    private func configureDescription(with text: ProfileService.Profile) {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
         label.font = UIFont.systemFont(ofSize: 13)
         label.textColor = .white
-        label.text = "Hello, world!"
+        label.text = profileData?.bio
         label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
         label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 170).isActive = true
+    }
+    
+    private func configureUIWithProfileData(data: ProfileService.Profile) {
+        configureNickname(with: data)
+        configureDescription(with: data)
+        configureNameLabel(with: data)
     }
     
 }
