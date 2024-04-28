@@ -95,6 +95,15 @@
 			path = ImageFeed;
 			sourceTree = "<group>";
 		};
+		98B370042BDE60EC00AAB781 /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				98CB35602BDA8A480084841A /* Main.storyboard */,
+				98CB355E2BDA8A480084841A /* LaunchScreen.storyboard */,
+			);
+			path = Storyboards;
+			sourceTree = "<group>";
+		};
 		98CB354C2BDA8A480084841A /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -161,13 +170,12 @@
 		98CB35622BDA8A480084841A /* Presenter */ = {
 			isa = PBXGroup;
 			children = (
+				98CB35612BDA8A480084841A /* SplashViewController.swift */,
+				98B370042BDE60EC00AAB781 /* Storyboards */,
 				98CB35552BDA8A480084841A /* Auth */,
 				98CB35582BDA8A480084841A /* ImagesLIst */,
 				98CB355A2BDA8A480084841A /* Profile */,
 				98CB355C2BDA8A480084841A /* SingleImageView */,
-				98CB355E2BDA8A480084841A /* LaunchScreen.storyboard */,
-				98CB35602BDA8A480084841A /* Main.storyboard */,
-				98CB35612BDA8A480084841A /* SplashViewController.swift */,
 			);
 			path = Presenter;
 			sourceTree = "<group>";

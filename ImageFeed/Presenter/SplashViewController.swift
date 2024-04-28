@@ -3,13 +3,13 @@ import ProgressHUD
 
 final class SplashViewController: UIViewController { //MARK: UIViewController
     
-    //MARK: Properties
+    //MARK: - Properties
     private let showAuthenticationScreenSegueIdentifier = "ShowAuthFlow"
     private let oauth2Service = OAuth2Service()
     private let storage = OAuth2TokenStorage()
     private let profileService = ProfileService.shared
     
-    //MARK: Lifecycle
+    //MARK: - Lifecycle
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -31,7 +31,7 @@ final class SplashViewController: UIViewController { //MARK: UIViewController
         .lightContent
     }
     
-    //MARK: Functions
+    //MARK: - Functions
     private func switchToTabBarController() {
         guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
         let tabBarController = UIStoryboard(name: "Main", bundle: .main)

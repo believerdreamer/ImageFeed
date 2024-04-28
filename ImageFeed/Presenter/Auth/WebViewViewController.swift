@@ -12,18 +12,18 @@ protocol WebViewViewControllerDelegate: AnyObject{
 
 final class WebViewViewController: UIViewController {
     
-    // MARK: Constants
+    // MARK: - Constants
     
     let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
     
     weak var delegate: WebViewViewControllerDelegate?
     
-    // MARK: IBOutlet
+    // MARK: - IBOutlet
     
     @IBOutlet private weak var webView: WKWebView!
     @IBOutlet private weak var progressView: UIProgressView!
     
-    // MARK: Lifecycle
+    // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,7 +47,7 @@ final class WebViewViewController: UIViewController {
         webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), context: nil)
     }
     
-    //MARK: KVO
+    //MARK: - KVO
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == #keyPath(WKWebView.estimatedProgress) {
@@ -59,7 +59,7 @@ final class WebViewViewController: UIViewController {
 
     
     
-    // MARK: Private Functions
+    // MARK: - Private Functions
     
     private func updateProgress() {
         progressView.progress = 0.1
@@ -73,7 +73,7 @@ final class WebViewViewController: UIViewController {
         }
     }
     
-    // MARK: Actions
+    // MARK: - Actions
     
     @IBAction func didTapBackButton(_ sender: Any) {
         delegate?.webViewViewControllerDidCancel(self)

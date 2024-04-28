@@ -1,6 +1,6 @@
 import UIKit
 
-//MARK: UIViewController
+//MARK:  - UIViewController
 
 final class ProfileViewContoller: UIViewController{
     
@@ -11,6 +11,7 @@ final class ProfileViewContoller: UIViewController{
         var bio: String
     }
     
+    //MARK: - Properties
     private let userDefaults = UserDefaults.standard
     private let tokenStorage = OAuth2TokenStorage()
     private let profileService = ProfileService.shared
@@ -20,7 +21,7 @@ final class ProfileViewContoller: UIViewController{
         userDefaults.removeObject(forKey: tokenStorage.token!)
     }
     
-    //MARK: Lifecycle
+    //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         configureProfileImage()
@@ -30,7 +31,7 @@ final class ProfileViewContoller: UIViewController{
         }
     }
     
-    //MARK: Configure screen objects
+    //MARK: - Configure screen objects
     private func configureProfileImage() {
         
         let profileImage = UIImage(named: "UserPhoto")
