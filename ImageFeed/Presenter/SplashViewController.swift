@@ -1,16 +1,21 @@
 import UIKit
 import ProgressHUD
 
-final class SplashViewController: UIViewController {
+final class SplashViewController: UIViewController { //MARK: UIViewController
+    
+    //MARK: Properties
     private let showAuthenticationScreenSegueIdentifier = "ShowAuthFlow"
     private let oauth2Service = OAuth2Service()
-    private let oauth2TokenStorage = OAuth2TokenStorage()
+    private let storage = OAuth2TokenStorage()
+    private let profileService = ProfileService.shared
     
+    //MARK: Lifecycle
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if oauth2TokenStorage.token != nil {
+        if storage.token != nil {
             switchToTabBarController()
+            fetchProfile(storage.token ?? " ")
         } else {
             performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
         }
@@ -19,17 +24,35 @@ final class SplashViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setNeedsStatusBarAppearanceUpdate()
+        
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
     }
     
+    //MARK: Functions
     private func switchToTabBarController() {
         guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
         let tabBarController = UIStoryboard(name: "Main", bundle: .main)
             .instantiateViewController(withIdentifier: "TabBarViewController")
         window.rootViewController = tabBarController
+    }
+    
+    private func fetchProfile(_ token: String) {
+        UIBlockingPorgressHUD.show()
+        profileService.fetchProfile(token: token) {result in
+            switch result {
+            case .success(let body):
+                print(body)
+                ProfileService.shared.profileData = body
+            case .failure(let error):
+                print(error)
+                assertionFailure("failed to fetch profile")
+                break
+            }
+            UIBlockingPorgressHUD.dismiss()
+        }
     }
 }
 
@@ -47,7 +70,7 @@ extension SplashViewController {
     }
 }
 
-extension SplashViewController: AuthViewControllerDelegate {
+extension SplashViewController: AuthViewControllerDelegate { //MARK: AuthViewControllerDelegate
     
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
         dismiss(animated: true) { [weak self] in

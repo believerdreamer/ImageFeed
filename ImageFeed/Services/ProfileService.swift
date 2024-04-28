@@ -4,6 +4,8 @@ final class ProfileService {
     
     //MARK: Properties
     
+    static let shared = ProfileService() //MARK: Singleton
+    var profileData: Profile?
     private let urlSession = URLSession.shared
     private var task: URLSessionTask?
     private enum ProfileServiceError: Error {

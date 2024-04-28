@@ -5,7 +5,7 @@ final class OAuth2TokenStorage {
         case token
     }
     
-    var token: String? {
+    var token: String? { //MARK: Token Storage
         get {
             UserDefaults.standard.string(forKey: Keys.token.rawValue)
         }

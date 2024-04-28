@@ -11,15 +11,13 @@ final class ProfileViewContoller: UIViewController{
         var bio: String
     }
     
-    var queue = DispatchQueue(label: "profile queue")
     private let userDefaults = UserDefaults.standard
     private let tokenStorage = OAuth2TokenStorage()
-    private let profileService = ProfileService()
-    private var profileData: ProfileService.Profile?
+    private let profileService = ProfileService.shared
     
     @objc private func didTapButton() {
         performSegue(withIdentifier: "ShowAuthScreen", sender: nil)
-            userDefaults.removeObject(forKey: "token")
+        userDefaults.removeObject(forKey: tokenStorage.token!)
     }
     
     //MARK: Lifecycle
@@ -27,28 +25,10 @@ final class ProfileViewContoller: UIViewController{
         super.viewDidLoad()
         configureProfileImage()
         configureExitButton()
-        
-        if let token = tokenStorage.token {
-            profileService.fetchProfile(token: token) { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let body):
-                    self.queue.async {
-                        self.profileData = body
-                        DispatchQueue.main.async {
-                            self.configureUIWithProfileData(data: body)
-                        }
-                    }
-                case .failure:
-                    assertionFailure("Не удалось получить профиль!")
-                }
-            }
-        } else {
-            assertionFailure("Токен отсутствует!")
+        DispatchQueue.main.async {
+            self.configureUIWithProfileData(data: self.profileService.profileData!)
         }
     }
-        
-    
     
     //MARK: Configure screen objects
     private func configureProfileImage() {
@@ -83,7 +63,7 @@ final class ProfileViewContoller: UIViewController{
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
-        label.text = profileData?.name
+        label.text = profileService.profileData?.name
         label.font = UIFont.boldSystemFont(ofSize: 23)
         label.textColor = .white
         label.widthAnchor.constraint(equalToConstant: 241).isActive = true
@@ -95,7 +75,7 @@ final class ProfileViewContoller: UIViewController{
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
-        label.text = "@" + (profileData?.username ?? "")
+        label.text = "@" + (profileService.profileData?.username ?? "default")
         label.font = UIFont.systemFont(ofSize: 13)
         label.textColor = UIColor(named: "YPGrey")
         label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 144).isActive = true
@@ -108,7 +88,7 @@ final class ProfileViewContoller: UIViewController{
         view.addSubview(label)
         label.font = UIFont.systemFont(ofSize: 13)
         label.textColor = .white
-        label.text = profileData?.bio
+        label.text = profileService.profileData?.bio
         label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
         label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 170).isActive = true
     }
