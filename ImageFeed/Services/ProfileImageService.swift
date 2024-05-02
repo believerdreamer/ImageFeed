@@ -71,34 +71,41 @@ final class ProfileImageService {
     }
     
     private func fetchProfileImageTask(
-        request: URLRequest,
-        completion: @escaping (Result<UserResult, Error>) -> Void
-    ) -> URLSessionTask {
-        let decoder = JSONDecoder()
-        return urlSession.dataTask(with: request) { (data, response, error) in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
-                let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
-                let errorDescription = HTTPURLResponse.localizedString(forStatusCode: statusCode)
-                completion(.failure(ProfileImageServiceError.invalidRequest))
-                return
-            }
-            
-            guard let data = data else {
-                completion(.failure(ProfileImageServiceError.invalidRequest))
-                return
-            }
-            
-            do {
-                let profileResult = try decoder.decode(UserResult.self, from: data)
-                completion(.success(profileResult))
-            } catch {
-                completion(.failure(error))
-            }
-        }
-    }
+          request: URLRequest,
+          completion: @escaping (Result<UserResult, Error>) -> Void
+      ) -> URLSessionTask {
+          let decoder = JSONDecoder()
+          return urlSession.dataTask(with: request) { (data, response, error) in
+              if let error = error {
+                  print("[fetchProfileImageTask]: \(error)")
+                  completion(.failure(error))
+                  return
+              }
+
+              guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+                  let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
+                  let errorDescription = HTTPURLResponse.localizedString(forStatusCode: statusCode)
+                  let error = NetworkError.httpStatusCode(statusCode)
+                  print("[fetchProfileImageTask]: \(error)")
+                  completion(.failure(error))
+                  return
+              }
+
+              guard let data = data else {
+                  let error = NetworkError.urlSessionError
+                  print("[fetchProfileImageTask]: \(error)")
+                  completion(.failure(error))
+                  return
+              }
+
+              do {
+                  let profileResult = try decoder.decode(UserResult.self, from: data)
+                  completion(.success(profileResult))
+              } catch {
+                  print("[fetchProfileImageTask]: \(error)")
+                  completion(.failure(error))
+              }
+          }
+      }
+
 }

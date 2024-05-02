@@ -70,6 +70,7 @@ final class ProfileService {
         task.resume()
     }
     
+
     private func fetchProfileTask(
         request: URLRequest,
         completion: @escaping (Result<ProfileResult, Error>) -> Void
@@ -77,28 +78,35 @@ final class ProfileService {
         let decoder = JSONDecoder()
         return urlSession.dataTask(with: request) { (data, response, error) in
             if let error = error {
+                print("[fetchProfileTask]: \(error)")
                 completion(.failure(error))
                 return
             }
-            
+
             guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
                 let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
                 let errorDescription = HTTPURLResponse.localizedString(forStatusCode: statusCode)
-                completion(.failure(ProfileServiceError.invalidRequest))
+                let error = NetworkError.httpStatusCode(statusCode)
+                print("[fetchProfileTask]: \(error)")
+                completion(.failure(error))
                 return
             }
-            
+
             guard let data = data else {
-                completion(.failure(ProfileServiceError.invalidRequest))
+                let error = NetworkError.urlSessionError
+                print("[fetchProfileTask]: \(error)")
+                completion(.failure(error))
                 return
             }
-            
+
             do {
                 let profileResult = try decoder.decode(ProfileResult.self, from: data)
                 completion(.success(profileResult))
             } catch {
+                print("[fetchProfileTask]: \(error)")
                 completion(.failure(error))
             }
         }
     }
+
 }
