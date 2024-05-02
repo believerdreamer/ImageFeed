@@ -8,6 +8,7 @@ final class SplashViewController: UIViewController { //MARK: UIViewController
     private let oauth2Service = OAuth2Service()
     private let storage = OAuth2TokenStorage()
     private let profileService = ProfileService.shared
+    private let profileImageService = ProfileImageService.shared
     
     //MARK: - Lifecycle
     override func viewDidAppear(_ animated: Bool) {
@@ -16,6 +17,7 @@ final class SplashViewController: UIViewController { //MARK: UIViewController
         if storage.token != nil {
             switchToTabBarController()
             fetchProfile(storage.token ?? " ")
+            
         } else {
             performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
         }
@@ -46,6 +48,7 @@ final class SplashViewController: UIViewController { //MARK: UIViewController
             case .success(let body):
                 print(body)
                 ProfileService.shared.profileData = body
+                self.profileImageService.fetchProfileImageURL(token: self.storage.token!){_ in }
             case .failure(let error):
                 print(error)
                 assertionFailure("failed to fetch profile")
