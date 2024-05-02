@@ -11,10 +11,25 @@ final class ProfileViewContoller: UIViewController{
         var bio: String
     }
     
+    override init(nibName: String?, bundle: Bundle?) {
+            super.init(nibName: nibName, bundle: bundle)
+            addObserver()
+        }
+    
+    required init?(coder: NSCoder) {
+            super.init(coder: coder)
+            addObserver()
+        }
+    
+    deinit {
+           removeObserver()
+       }
+    
     //MARK: - Properties
     private let userDefaults = UserDefaults.standard
     private let tokenStorage = OAuth2TokenStorage()
     private let profileService = ProfileService.shared
+    private var profileImageServiceObserver: NSObjectProtocol?
     
     @objc private func didTapButton() {
         performSegue(withIdentifier: "ShowAuthScreen", sender: nil)
@@ -29,7 +44,56 @@ final class ProfileViewContoller: UIViewController{
         DispatchQueue.main.async {
             self.configureUIWithProfileData(data: self.profileService.profileData!)
         }
+        if let avatarURL = ProfileImageService.shared.avatarURL {
+            let url = URL(string: avatarURL)
+        }
+        
+        profileImageServiceObserver = NotificationCenter.default
+                    .addObserver(
+                        forName: ProfileImageService.didChangeNotification,
+                        object: nil,
+                        queue: .main
+                    ) { [weak self] _ in
+                        guard let self = self else { return }
+                        self.updateAvatar()
+                    }
+                updateAvatar()
     }
+    
+    //MARK: - Functions
+    private func updateAvatar() {
+           guard
+               let profileImageURL = ProfileImageService.shared.avatarURL,
+               let url = URL(string: profileImageURL)
+           else { return }
+           // TODO [Sprint 11] Обновитt аватар, используя Kingfisher
+       }
+    
+    private func addObserver() {
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(updateAvatar(notification:)),
+                name: ProfileImageService.didChangeNotification,
+                object: nil)
+        }
+       
+       private func removeObserver() {
+            NotificationCenter.default.removeObserver(
+                self,
+                name: ProfileImageService.didChangeNotification,
+                object: nil)
+        }
+       
+        @objc
+        private func updateAvatar(notification: Notification) {
+            guard
+                isViewLoaded,
+                let userInfo = notification.userInfo,
+                let profileImageURL = userInfo["URL"] as? String,
+                let url = URL(string: profileImageURL) else { return }
+            // TODO [Sprint 11] Обновите аватар, используя Kingfisher
+        }
+        
     
     //MARK: - Configure screen objects
     private func configureProfileImage() {

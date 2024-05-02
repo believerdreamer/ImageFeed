@@ -10,6 +10,7 @@ import Foundation
 final class ProfileImageService {
     
     static var shared = ProfileImageService()
+    static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
     private var profileService = ProfileService.shared
     private var task: URLSessionTask?
     private let urlSession = URLSession.shared
@@ -48,12 +49,18 @@ final class ProfileImageService {
             return
         }
         let task = fetchProfileImageTask(request: request) { result in
+            
             DispatchQueue.main.async {
                 switch result {
                 case .success(let imageResult):
-                    let image = UserResult(profileImage: imageResult.profileImage) //MARK: Get image url
-                    print(image.profileImage.small)
-                    completion(.success(image))
+                    self.avatarURL = imageResult.profileImage.small.absoluteString
+                    print(self.avatarURL ?? "No avatar URL available")
+                    NotificationCenter.default.post(
+                        name: ProfileImageService.didChangeNotification,
+                        object: self,
+                        userInfo: ["URL": self.avatarURL ?? ""])
+                    completion(.success(imageResult))
+
                 case .failure(let error):
                     completion(.failure(error))
                 }
