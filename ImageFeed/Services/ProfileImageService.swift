@@ -29,7 +29,7 @@ final class ProfileImageService {
     }
     
     struct ProfileImage: Codable {
-        let small: URL
+        let large: URL
     }
     
     func makeProfileImageRequest(token: String) -> URLRequest? {
@@ -53,7 +53,7 @@ final class ProfileImageService {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let imageResult):
-                    self.avatarURL = imageResult.profileImage.small.absoluteString
+                    self.avatarURL = imageResult.profileImage.large.absoluteString
                     print(self.avatarURL ?? "No avatar URL available")
                     NotificationCenter.default.post(
                         name: ProfileImageService.didChangeNotification,

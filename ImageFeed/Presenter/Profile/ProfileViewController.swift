@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 //MARK:  - UIViewController
 
@@ -12,18 +13,18 @@ final class ProfileViewContoller: UIViewController{
     }
     
     override init(nibName: String?, bundle: Bundle?) {
-            super.init(nibName: nibName, bundle: bundle)
-            addObserver()
-        }
+        super.init(nibName: nibName, bundle: bundle)
+        addObserver()
+    }
     
     required init?(coder: NSCoder) {
-            super.init(coder: coder)
-            addObserver()
-        }
+        super.init(coder: coder)
+        addObserver()
+    }
     
     deinit {
-           removeObserver()
-       }
+        removeObserver()
+    }
     
     //MARK: - Properties
     private let userDefaults = UserDefaults.standard
@@ -39,67 +40,81 @@ final class ProfileViewContoller: UIViewController{
     //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureProfileImage()
+        clearCache()
+        updateAvatar()
         configureExitButton()
+        
         DispatchQueue.main.async {
             self.configureUIWithProfileData(data: self.profileService.profileData!)
         }
-        if let avatarURL = ProfileImageService.shared.avatarURL {
-            let url = URL(string: avatarURL)
-        }
         
         profileImageServiceObserver = NotificationCenter.default
-                    .addObserver(
-                        forName: ProfileImageService.didChangeNotification,
-                        object: nil,
-                        queue: .main
-                    ) { [weak self] _ in
-                        guard let self = self else { return }
-                        self.updateAvatar()
-                    }
-                updateAvatar()
+            .addObserver(
+                forName: ProfileImageService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                self.updateAvatar()
+            }
+        updateAvatar()
     }
     
     //MARK: - Functions
-    private func updateAvatar() {
-           guard
-               let profileImageURL = ProfileImageService.shared.avatarURL,
-               let url = URL(string: profileImageURL)
-           else { return }
-           // TODO [Sprint 11] Обновитt аватар, используя Kingfisher
-       }
+    private func updateAvatar(){
+        
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+        else { return }
+        let image = UIImageView()
+        let processor = RoundCornerImageProcessor(cornerRadius: 60)
+        image.kf.setImage(
+            with: url,
+            placeholder: UIImage(named: "placeholder.jpeg"),
+            options: [.processor(processor)])
+        configureProfileImage(imageView: image)
+        
+        // TODO [Sprint 11] Обновитt аватар, используя Kingfisher
+    }
     
     private func addObserver() {
-            NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(updateAvatar(notification:)),
-                name: ProfileImageService.didChangeNotification,
-                object: nil)
-        }
-       
-       private func removeObserver() {
-            NotificationCenter.default.removeObserver(
-                self,
-                name: ProfileImageService.didChangeNotification,
-                object: nil)
-        }
-       
-        @objc
-        private func updateAvatar(notification: Notification) {
-            guard
-                isViewLoaded,
-                let userInfo = notification.userInfo,
-                let profileImageURL = userInfo["URL"] as? String,
-                let url = URL(string: profileImageURL) else { return }
-            // TODO [Sprint 11] Обновите аватар, используя Kingfisher
-        }
-        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(updateAvatar(notification:)),
+            name: ProfileImageService.didChangeNotification,
+            object: nil)
+    }
+    
+    private func removeObserver() {
+        NotificationCenter.default.removeObserver(
+            self,
+            name: ProfileImageService.didChangeNotification,
+            object: nil)
+    }
+    
+    @objc
+    private func updateAvatar(notification: Notification) {
+        guard
+            isViewLoaded,
+            let userInfo = notification.userInfo,
+            let profileImageURL = userInfo["URL"] as? String,
+            let url = URL(string: profileImageURL) else { return }
+        // TODO [Sprint 11] Обновите аватар, используя Kingfisher
+    }
+    
+    private func clearCache() {
+        let cache = ImageCache.default
+        cache.clearMemoryCache()
+        cache.clearDiskCache()
+    }
+    
     
     //MARK: - Configure screen objects
-    private func configureProfileImage() {
+    private func configureProfileImage(imageView: UIImageView) {
         
-        let profileImage = UIImage(named: "UserPhoto")
-        let imageView = UIImageView(image: profileImage)
+//        let profileImage = UIImage(named: "placeholder")
+//        let imageView = UIImageView(image: profileImage)
         imageView.tintColor = .gray
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
@@ -107,6 +122,7 @@ final class ProfileViewContoller: UIViewController{
         imageView.widthAnchor.constraint(equalToConstant: 70).isActive = true
         imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32).isActive = true
         imageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
+        imageView.layer.cornerRadius = 20
     }
     
     private func configureExitButton() {
