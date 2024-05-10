@@ -1,5 +1,6 @@
 import UIKit
 import Kingfisher
+import SwiftKeychainWrapper
 
 //MARK:  - UIViewController
 
@@ -34,7 +35,7 @@ final class ProfileViewContoller: UIViewController{
     
     @objc private func didTapButton() {
         performSegue(withIdentifier: "ShowAuthScreen", sender: nil)
-        userDefaults.removeObject(forKey: tokenStorage.token!)
+        KeychainWrapper.standard.removeAllKeys()
     }
     
     //MARK: - Lifecycle
@@ -68,6 +69,7 @@ final class ProfileViewContoller: UIViewController{
             let url = URL(string: profileImageURL)
         else { return }
         let image = UIImageView()
+        image.layer.masksToBounds = true
         let processor = RoundCornerImageProcessor(cornerRadius: 60)
         image.kf.setImage(
             with: url,

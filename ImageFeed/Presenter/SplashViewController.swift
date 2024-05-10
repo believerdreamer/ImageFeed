@@ -1,5 +1,6 @@
 import UIKit
 import ProgressHUD
+import SwiftKeychainWrapper
 
 final class SplashViewController: UIViewController { //MARK: UIViewController
     
@@ -44,6 +45,7 @@ final class SplashViewController: UIViewController { //MARK: UIViewController
     private func fetchProfile(_ token: String) {
         UIBlockingPorgressHUD.show()
         profileService.fetchProfile(token: token) {result in
+            print("token for profile is \(token). type of token - \(type(of: token))")
             switch result {
             case .success(let body):
                 print(body)
@@ -85,6 +87,7 @@ extension SplashViewController: AuthViewControllerDelegate { //MARK: AuthViewCon
     }
 
     private func fetchOAuthToken(_ code: String) {
+        KeychainWrapper.standard.removeAllKeys()
         oauth2Service.fetchAuthToken(code) { [weak self] result in
             guard let self = self else { return }
             switch result {

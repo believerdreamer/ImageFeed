@@ -8,16 +8,17 @@ final class OAuth2TokenStorage {
     
     var token: String? { //MARK: Token Storage
         get {
-            KeychainWrapper.standard.string(forKey: Keys.token.rawValue)
+            print("getting token with keychain - \(String(describing: KeychainWrapper.standard.string(forKey: Keys.token.rawValue)))")
+            
+            return KeychainWrapper.standard.string(forKey: Keys.token.rawValue)
+
+//
         }
         set {
-            let isSuccess = KeychainWrapper.standard.set(newValue ?? " ", forKey: Keys.token.rawValue)
-            guard isSuccess else {
-                assertionFailure("Ошибка записи токена")
-                return
-            }
+            print("setting new token with keychain - \(String(describing: newValue))")
+            KeychainWrapper.standard.set(newValue ?? "default token value", forKey: Keys.token.rawValue)
+
         }
     }
 }
-
 
