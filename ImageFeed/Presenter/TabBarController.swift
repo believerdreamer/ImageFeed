@@ -16,9 +16,10 @@ final class TabBarController: UITabBarController {
         let imageListVC = storyboard.instantiateViewController(withIdentifier: "ImageListViewController")
         imageListVC.tabBarItem.image = UIImage(named: "tab_editorial_active")
         imageListVC.tabBarItem.title = ""
-        let profileVC = ProfileViewContoller()
         
+        let profileVC = ProfileViewContoller()
         profileVC.tabBarItem.image = UIImage(named: "tab_profile_active")
+        
         self.viewControllers = [imageListVC, profileVC]
     }
 }

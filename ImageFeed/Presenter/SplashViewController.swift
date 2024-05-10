@@ -12,15 +12,21 @@ final class SplashViewController: UIViewController { //MARK: UIViewController
     private let profileImageService = ProfileImageService.shared
     
     //MARK: - Lifecycle
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupUI()
+    }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
         if storage.token != nil {
             switchToTabBarController()
             fetchProfile(storage.token ?? " ")
             
         } else {
-            performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
+//            performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
+            presentAuthViewController()
         }
     }
     
@@ -35,6 +41,26 @@ final class SplashViewController: UIViewController { //MARK: UIViewController
     }
     
     //MARK: - Functions
+    private func setupUI() {
+        view.backgroundColor = UIColor(named: "YPBlack")
+               let logo = UIImageView(image: UIImage(named: "splash_screen_logo"))
+               logo.translatesAutoresizingMaskIntoConstraints = false
+               view.addSubview(logo)
+               
+               NSLayoutConstraint.activate([
+                   logo.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                   logo.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+               ])
+    }
+    
+    private func presentAuthViewController() {
+        let storyboard = UIStoryboard(name: "Main", bundle: .main)
+        let authVC = storyboard.instantiateViewController(withIdentifier: "AuthViewController") as? AuthViewController
+        authVC?.delegate = self
+        authVC?.modalPresentationStyle = .fullScreen
+        present(authVC!, animated: true)
+    }
+    
     private func switchToTabBarController() {
         guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
         let tabBarController = UIStoryboard(name: "Main", bundle: .main)
@@ -61,19 +87,19 @@ final class SplashViewController: UIViewController { //MARK: UIViewController
     }
 }
 
-extension SplashViewController {
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == showAuthenticationScreenSegueIdentifier {
-            guard
-                let navigationController = segue.destination as? UINavigationController,
-                let viewController = navigationController.viewControllers[0] as? AuthViewController
-            else { fatalError("Failed to prepare for \(showAuthenticationScreenSegueIdentifier)") }
-            viewController.delegate = self
-        } else {
-            super.prepare(for: segue, sender: sender)
-        }
-    }
-}
+//extension SplashViewController {
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        if segue.identifier == showAuthenticationScreenSegueIdentifier {
+//            guard
+//                let navigationController = segue.destination as? UINavigationController,
+//                let viewController = navigationController.viewControllers[0] as? AuthViewController
+//            else { fatalError("Failed to prepare for \(showAuthenticationScreenSegueIdentifier)") }
+//            viewController.delegate = self
+//        } else {
+//            super.prepare(for: segue, sender: sender)
+//        }
+//    }
+//}
 
 extension SplashViewController: AuthViewControllerDelegate { //MARK: AuthViewControllerDelegate
     
