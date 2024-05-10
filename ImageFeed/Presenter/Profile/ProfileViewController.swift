@@ -36,10 +36,12 @@ final class ProfileViewContoller: UIViewController{
     @objc private func didTapButton() {
         performSegue(withIdentifier: "ShowAuthScreen", sender: nil)
         KeychainWrapper.standard.removeAllKeys()
+        //TODO: Доделать кнопку
     }
     
     //MARK: - Lifecycle
     override func viewDidLoad() {
+        view.backgroundColor = UIColor(named: "YPBlack")
         super.viewDidLoad()
         clearCache()
         updateAvatar()

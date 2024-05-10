@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		98099C242BE9088F00D84EB0 /* SwiftKeychainWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 98099C232BE9088F00D84EB0 /* SwiftKeychainWrapper */; };
+		981A0CC22BEE0D96009D9168 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A0CC12BEE0D96009D9168 /* TabBarController.swift */; };
 		984C5F692A73E87500A2E939 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 984C5F682A73E87500A2E939 /* AppDelegate.swift */; };
 		984C5F722A73E87700A2E939 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 984C5F712A73E87700A2E939 /* Assets.xcassets */; };
 		984F63452BE547A400F73C52 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 984F63442BE547A400F73C52 /* Kingfisher */; };
@@ -33,6 +34,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		981A0CC12BEE0D96009D9168 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		984C5F652A73E87500A2E939 /* ImageFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		984C5F682A73E87500A2E939 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		984C5F712A73E87700A2E939 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 		98CB35622BDA8A480084841A /* Presenter */ = {
 			isa = PBXGroup;
 			children = (
+				981A0CC12BEE0D96009D9168 /* TabBarController.swift */,
 				98CB35612BDA8A480084841A /* SplashViewController.swift */,
 				98B370042BDE60EC00AAB781 /* Storyboards */,
 				98CB35552BDA8A480084841A /* Auth */,
@@ -271,6 +274,7 @@
 				98CB356B2BDA8A480084841A /* WebViewViewController.swift in Sources */,
 				98CB356C2BDA8A480084841A /* ImagesListCell.swift in Sources */,
 				98CB35672BDA8A480084841A /* Oauth2TokenStorage.swift in Sources */,
+				981A0CC22BEE0D96009D9168 /* TabBarController.swift in Sources */,
 				98CB35692BDA8A480084841A /* ProfileService.swift in Sources */,
 				98CB35682BDA8A480084841A /* OauthTokenResponseBody.swift in Sources */,
 				984C5F692A73E87500A2E939 /* AppDelegate.swift in Sources */,
