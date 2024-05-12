@@ -19,13 +19,13 @@ final class SplashViewController: UIViewController { //MARK: UIViewController
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
+        
         if storage.token != nil {
             switchToTabBarController()
             fetchProfile(storage.token ?? " ")
             
         } else {
-//            performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
+            //            performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
             presentAuthViewController()
         }
     }
@@ -43,14 +43,14 @@ final class SplashViewController: UIViewController { //MARK: UIViewController
     //MARK: - Functions
     private func setupUI() {
         view.backgroundColor = UIColor(named: "YPBlack")
-               let logo = UIImageView(image: UIImage(named: "splash_screen_logo"))
-               logo.translatesAutoresizingMaskIntoConstraints = false
-               view.addSubview(logo)
-               
-               NSLayoutConstraint.activate([
-                   logo.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                   logo.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-               ])
+        let logo = UIImageView(image: UIImage(named: "splash_screen_logo"))
+        logo.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(logo)
+        
+        NSLayoutConstraint.activate([
+            logo.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            logo.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
     }
     
     private func presentAuthViewController() {
@@ -76,7 +76,7 @@ final class SplashViewController: UIViewController { //MARK: UIViewController
             case .success(let body):
                 print(body)
                 ProfileService.shared.profileData = body
-                self.profileImageService.fetchProfileImageURL(token: self.storage.token!){_ in }
+                self.profileImageService.fetchProfileImageURL(token: self.storage.token ?? "default token") {_ in }
             case .failure(let error):
                 print(error)
                 assertionFailure("failed to fetch profile")
@@ -86,20 +86,6 @@ final class SplashViewController: UIViewController { //MARK: UIViewController
         }
     }
 }
-
-//extension SplashViewController {
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        if segue.identifier == showAuthenticationScreenSegueIdentifier {
-//            guard
-//                let navigationController = segue.destination as? UINavigationController,
-//                let viewController = navigationController.viewControllers[0] as? AuthViewController
-//            else { fatalError("Failed to prepare for \(showAuthenticationScreenSegueIdentifier)") }
-//            viewController.delegate = self
-//        } else {
-//            super.prepare(for: segue, sender: sender)
-//        }
-//    }
-//}
 
 extension SplashViewController: AuthViewControllerDelegate { //MARK: AuthViewControllerDelegate
     
@@ -111,9 +97,9 @@ extension SplashViewController: AuthViewControllerDelegate { //MARK: AuthViewCon
             UIBlockingPorgressHUD.dismiss()
         }
     }
-
+    
     private func fetchOAuthToken(_ code: String) {
-        KeychainWrapper.standard.removeAllKeys()
+        storage.removeAll()
         oauth2Service.fetchAuthToken(code) { [weak self] result in
             guard let self = self else { return }
             switch result {

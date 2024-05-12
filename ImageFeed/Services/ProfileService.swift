@@ -5,6 +5,7 @@ final class ProfileService {
     //MARK: Properties
     
     static let shared = ProfileService() //MARK: Singleton
+    private init(){}
     var profileData: Profile?
     private let urlSession = URLSession.shared
     private var task: URLSessionTask?
@@ -36,7 +37,7 @@ final class ProfileService {
     //MARK: Functions
     
     func makeProfileRequest(token: String) -> URLRequest? {
-        let url = URL(string: "https://api.unsplash.com/me")!
+        guard let url = profileURL else {return nil}
         var request = URLRequest(url: url)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         return request

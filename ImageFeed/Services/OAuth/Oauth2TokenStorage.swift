@@ -6,7 +6,7 @@ final class OAuth2TokenStorage {
         case token
     }
     
-    var token: String? { //MARK: Token Storage
+     var token: String? { //MARK: Token Storage
         get {
             print("getting token with keychain - \(String(describing: KeychainWrapper.standard.string(forKey: Keys.token.rawValue)))")
             
@@ -19,6 +19,10 @@ final class OAuth2TokenStorage {
             KeychainWrapper.standard.set(newValue ?? "default token value", forKey: Keys.token.rawValue)
 
         }
+    }
+    
+    func removeAll() {
+        KeychainWrapper.standard.removeAllKeys()
     }
 }
 

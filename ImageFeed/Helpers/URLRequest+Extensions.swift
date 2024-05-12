@@ -15,19 +15,21 @@ extension URLRequest {
         parameters: [String: String],
         httpMethod: String
     ) -> URLRequest? {
-        var urlComponents = URLComponents(string: urlString)
+        guard var urlComponents = URLComponents(string: urlString) else {
+            fatalError()
+        }
         var queryItems: [URLQueryItem] = []
         for (key, value) in parameters {
             queryItems.append(URLQueryItem(name: key, value: value))
         }
-        urlComponents?.queryItems = queryItems
+        urlComponents.queryItems = queryItems
         guard
-            let url = urlComponents?.url
+            let url = urlComponents.url
         else {
             assertionFailure("Failed to create URL")
             return nil
         }
-        var request = URLRequest(url: urlComponents!.url!)
+        var request = URLRequest(url: urlComponents.url!)
         request.httpMethod = httpMethod
         return request
     }

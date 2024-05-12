@@ -8,5 +8,7 @@ enum Constants {
     static let accessScope: String = "public+read_user+write_likes"
 }
 
+let profileURL = URL(string: "https://api.unsplash.com/me")
+
 
 

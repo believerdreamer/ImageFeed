@@ -34,10 +34,6 @@ final class ProfileViewContoller: UIViewController{
     private var profileImageServiceObserver: NSObjectProtocol?
     
     @objc private func didTapButton() {
-        let authVC = UIStoryboard(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "AuthViewController")
-        authVC.modalPresentationStyle = .fullScreen
-        present(authVC, animated: true)
-        KeychainWrapper.standard.removeAllKeys()
         //TODO: Доделать кнопку
     }
     
@@ -48,7 +44,12 @@ final class ProfileViewContoller: UIViewController{
         clearCache()
         updateAvatar()
         configureExitButton()
-        configureUIWithProfileData(data: self.profileService.profileData!)
+//        configureUIWithProfileData(data: profileService.profileData)
+        guard let profileData = profileService.profileData else {
+            assertionFailure("profile data in ProfileViewController is nil")
+            return
+        }
+        configureUIWithProfileData(data: profileData)
         
         profileImageServiceObserver = NotificationCenter.default
             .addObserver(
