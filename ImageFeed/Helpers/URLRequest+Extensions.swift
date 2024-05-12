@@ -29,7 +29,7 @@ extension URLRequest {
             assertionFailure("Failed to create URL")
             return nil
         }
-        var request = URLRequest(url: urlComponents.url!)
+        var request = URLRequest(url: url)
         request.httpMethod = httpMethod
         return request
     }

@@ -44,7 +44,6 @@ final class ProfileViewContoller: UIViewController{
         clearCache()
         updateAvatar()
         configureExitButton()
-//        configureUIWithProfileData(data: profileService.profileData)
         guard let profileData = profileService.profileData else {
             assertionFailure("profile data in ProfileViewController is nil")
             return
@@ -98,13 +97,13 @@ final class ProfileViewContoller: UIViewController{
     }
     
     @objc
-    private func updateAvatar(notification: Notification) {
+    private func updateAvatar(notification: Notification) { //MARK: Не используется
         guard
             isViewLoaded,
             let userInfo = notification.userInfo,
             let profileImageURL = userInfo["URL"] as? String,
             let url = URL(string: profileImageURL) else { return }
-        // TODO [Sprint 11] Обновите аватар, используя Kingfisher
+        
     }
     
     private func clearCache() {

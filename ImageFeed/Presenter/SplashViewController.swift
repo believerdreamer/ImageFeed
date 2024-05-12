@@ -22,10 +22,13 @@ final class SplashViewController: UIViewController { //MARK: UIViewController
         
         if storage.token != nil {
             switchToTabBarController()
-            fetchProfile(storage.token ?? " ")
+            guard let token = storage.token else {
+                assertionFailure("failed to get token from storage")
+                return
+            }
+            fetchProfile(token)
             
         } else {
-            //            performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
             presentAuthViewController()
         }
     }
