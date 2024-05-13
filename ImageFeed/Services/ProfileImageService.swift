@@ -9,7 +9,7 @@ import Foundation
 
 final class ProfileImageService {
     
-    static var shared = ProfileImageService()
+    static var shared = ProfileImageService(); private init(){}
     static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
     private var profileService = ProfileService.shared
     private var task: URLSessionTask?
@@ -36,7 +36,7 @@ final class ProfileImageService {
         guard let nickname = profileService.profileData?.username else {return nil}
         let url = URL(string: "https://api.unsplash.com/users/\(nickname)")
         guard let url = url else {
-            assertionFailure("failed to create profoiel url")
+            assertionFailure("failed to create profile url")
             return nil
         }
         var request = URLRequest(url: url)

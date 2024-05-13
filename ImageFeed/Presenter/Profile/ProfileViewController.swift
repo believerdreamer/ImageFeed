@@ -115,9 +115,6 @@ final class ProfileViewContoller: UIViewController{
     
     //MARK: - Configure screen objects
     private func configureProfileImage(imageView: UIImageView) {
-        
-//        let profileImage = UIImage(named: "placeholder")
-//        let imageView = UIImageView(image: profileImage)
         imageView.tintColor = .gray
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
