@@ -12,54 +12,33 @@ protocol WebViewViewControllerDelegate: AnyObject{
 
 final class WebViewViewController: UIViewController {
     
-    // MARK: Constants
-    
-    let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
+    // MARK: - Properties
     
     weak var delegate: WebViewViewControllerDelegate?
+    private let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
+    private var estimatedProgressObservation: NSKeyValueObservation?
     
-    // MARK: IBOutlet
+    // MARK: - IBOutlet
     
     @IBOutlet private weak var webView: WKWebView!
     @IBOutlet private weak var progressView: UIProgressView!
     
-    // MARK: Lifecycle
+    // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         webView.navigationDelegate = self
-        updateProgress()
+        estimatedProgressObservation = webView.observe(
+            \.estimatedProgress,
+             options: [],
+             changeHandler: {[weak self] _, _ in
+                 guard let self = self else { return }
+                 self.updateProgress()
+             })
         loadWebView()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        webView.addObserver(
-            self,
-            forKeyPath: #keyPath(WKWebView.estimatedProgress),
-            options: .new,
-            context: nil)
-        updateProgress()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), context: nil)
-    }
-    
-    //MARK: KVO
-
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if keyPath == #keyPath(WKWebView.estimatedProgress) {
-            updateProgress()
-        } else {
-            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
-        }
-    }
-
-    
-    
-    // MARK: Private Functions
+    // MARK: - Private Functions
     
     private func updateProgress() {
         progressView.progress = 0.1
@@ -73,7 +52,7 @@ final class WebViewViewController: UIViewController {
         }
     }
     
-    // MARK: Actions
+    // MARK: - Actions
     
     @IBAction func didTapBackButton(_ sender: Any) {
         delegate?.webViewViewControllerDidCancel(self)
