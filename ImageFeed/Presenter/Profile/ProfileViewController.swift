@@ -13,16 +13,6 @@ final class ProfileViewContoller: UIViewController{
         var bio: String
     }
     
-    override init(nibName: String?, bundle: Bundle?) {
-        super.init(nibName: nibName, bundle: bundle)
-        addObserver()
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        addObserver()
-    }
-    
     deinit {
         removeObserver()
     }
@@ -81,29 +71,11 @@ final class ProfileViewContoller: UIViewController{
         // TODO [Sprint 11] Обновитt аватар, используя Kingfisher
     }
     
-    private func addObserver() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(updateAvatar(notification:)),
-            name: ProfileImageService.didChangeNotification,
-            object: nil)
-    }
-    
     private func removeObserver() {
         NotificationCenter.default.removeObserver(
             self,
             name: ProfileImageService.didChangeNotification,
             object: nil)
-    }
-    
-    @objc
-    private func updateAvatar(notification: Notification) { //MARK: Не используется
-        guard
-            isViewLoaded,
-            let userInfo = notification.userInfo,
-            let profileImageURL = userInfo["URL"] as? String,
-            let url = URL(string: profileImageURL) else { return }
-        
     }
     
     private func clearCache() {

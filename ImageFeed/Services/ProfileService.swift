@@ -87,6 +87,7 @@ final class ProfileService {
             guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
                 let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
                 let errorDescription = HTTPURLResponse.localizedString(forStatusCode: statusCode)
+                print(errorDescription)
                 let error = NetworkError.httpStatusCode(statusCode)
                 print("[fetchProfileTask]: \(error)")
                 completion(.failure(error))

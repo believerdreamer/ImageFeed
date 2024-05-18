@@ -63,6 +63,7 @@ extension URLSession {
             guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
                 let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
                 let errorDescription = HTTPURLResponse.localizedString(forStatusCode: statusCode)
+                print(errorDescription)
                 fulfillCompletionOnMainThread(.failure(NetworkError.httpStatusCode(statusCode)))
                 return
             }

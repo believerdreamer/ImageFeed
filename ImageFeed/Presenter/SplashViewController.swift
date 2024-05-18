@@ -20,6 +20,8 @@ final class SplashViewController: UIViewController { //MARK: UIViewController
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        KeychainWrapper.standard.removeAllKeys() //MARK: Удаление всех ключей для тестирования авторизации
+        
         if storage.token != nil {
             switchToTabBarController()
             guard let token = storage.token else {
