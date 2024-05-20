@@ -13,7 +13,7 @@ final class OAuth2TokenStorage {
         }
         set {
             print("setting new token with keychain - \(String(describing: newValue))")
-            KeychainWrapper.standard.set(newValue ?? "default token value", forKey: Keys.token.rawValue)
+            KeychainWrapper.standard.set(newValue ?? "", forKey: Keys.token.rawValue)
 
         }
     }

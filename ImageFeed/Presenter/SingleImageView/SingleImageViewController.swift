@@ -1,28 +1,20 @@
 import UIKit
 
 final class SingleImageViewController: UIViewController {
-    var image: UIImage!
     
+    var imageURL: URL?
     
     @IBOutlet private weak var scrollView: UIScrollView!
+    @IBOutlet private weak var imageView: UIImageView!
+    
     @IBAction private func clickBackButton(_ sender: Any) {
         dismiss(animated: true)
     }
-    @IBAction private func tapShareButton(_ sender: Any) {
-        let share = UIActivityViewController(
-            activityItems: [image ?? UIImage()],
-            applicationActivities: nil)
-        
-        present(share, animated: true)
-    }
     
-    @IBOutlet var imageView: UIImageView! {
-        
-        didSet {
-            guard isViewLoaded else { return }
-            imageView.image = image
-            rescaleAndCenterImageInScrollView(image: image)
-        }
+    @IBAction private func tapShareButton(_ sender: Any) {
+        guard let image = imageView.image else { return }
+        let share = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+        present(share, animated: true)
     }
     
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
@@ -45,13 +37,21 @@ final class SingleImageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        imageView.image = image
-        
         scrollView.minimumZoomScale = 0.25
         scrollView.maximumZoomScale = 1.25
         
-        rescaleAndCenterImageInScrollView(image: image)
-        
+        if let url = imageURL {
+            imageView.kf.setImage(with: url, completionHandler: { [weak self] result in
+                switch result {
+                case .success(let value):
+                    self?.rescaleAndCenterImageInScrollView(image: value.image)
+                case .failure(let error):
+                    print("Error loading image: \(error)")
+                }
+            })
+        } else {
+            print("imageURL is nil")
+        }
     }
 }
 

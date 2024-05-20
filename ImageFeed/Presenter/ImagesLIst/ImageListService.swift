@@ -30,8 +30,17 @@ final class ImageListService {
     struct PhotoResult: Codable {
         let id: String
         let createdAt: String
-        let welcomeDescription: String
+        let welcomeDescription: String?
         let urls: UrlResult
+        
+        enum CodingKeys: String, CodingKey {
+            case id
+            case createdAt = "created_at"
+            case welcomeDescription = "description"
+            case urls
+            
+            
+        }
     }
     
     //MARK: Properties
@@ -64,7 +73,7 @@ final class ImageListService {
         }
         
         var urlRequest = URLRequest(url: url)
-        urlRequest.addValue("YOUR_ACCESS_KEY", forHTTPHeaderField: "Authorization")
+        urlRequest.setValue("Bearer \(OAuth2TokenStorage().token ?? "default token")", forHTTPHeaderField: "Authorization")
         
         let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
             if let error = error {
@@ -84,8 +93,12 @@ final class ImageListService {
                 decoder.dateDecodingStrategy = .iso8601
                 let photoResults = try decoder.decode([PhotoResult].self, from: data)
                 let newPhotos: [Photo] = photoResults.compactMap { photoResult in
-                    guard !photoResult.createdAt.isEmpty else { return nil }
-                    guard let date = ISO8601DateFormatter().date(from: photoResult.createdAt) else { return nil }
+                    guard let date = ISO8601DateFormatter().date(from: photoResult.createdAt) else {
+                        print("Error converting createdAt to Date")
+                        return nil
+                        
+                    }
+                    
                     
                     return Photo(
                         id: photoResult.id,
