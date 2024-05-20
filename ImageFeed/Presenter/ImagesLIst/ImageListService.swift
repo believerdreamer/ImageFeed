@@ -1,10 +1,3 @@
-//
-//  ImageListService.swift
-//  ImageFeed
-//
-//  Created by Архип Семёнов on 17.05.2024.
-//
-
 import Foundation
 
 final class ImageListService {
@@ -16,7 +9,7 @@ final class ImageListService {
         let welcomeDescription: String?
         let thumbImageURL: String
         let largeImageURL: String
-        let isLiked: Bool
+        var isLiked: Bool
     }
     
     struct UrlResult: Codable {
@@ -38,19 +31,68 @@ final class ImageListService {
             case createdAt = "created_at"
             case welcomeDescription = "description"
             case urls
-            
-            
         }
     }
     
-    //MARK: Properties
+    // MARK: Properties
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     private var lastLoadedPage: Int = 0
     private var isFetching = false
-    private (set) var photos: [Photo] = []
+    private let semaphore = DispatchSemaphore(value: 1)
+    var photos: [Photo] = [] // Changed access level to 'internal'
     
+    // MARK: Methods
+    func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void) {
+            UIBlockingPorgressHUD.show()
+            
+            let urlString = "https://api.unsplash.com/photos/\(photoId)/like"
+            guard let url = URL(string: urlString) else {
+                completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
+                UIBlockingPorgressHUD.dismiss()
+                return
+            }
+            
+            var urlRequest = URLRequest(url: url)
+            urlRequest.setValue("Bearer \(OAuth2TokenStorage().token ?? "default token")", forHTTPHeaderField: "Authorization")
+            urlRequest.httpMethod = isLike ? "POST" : "DELETE"
+            
+            let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+                defer {
+                    UIBlockingPorgressHUD.dismiss()
+                }
+                
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                
+                guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+                    completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to change like status: Invalid response"])))
+                    return
+                }
+                
+                DispatchQueue.main.async {
+                    completion(.success(()))
+                }
+            }
+            task.resume()
+        }
+        
+
+
+
     
-    //MARK: Methods
+    /// Update the like status of a photo.
+    /// - Parameters:
+    ///   - photoId: The ID of the photo.
+    ///   - isLiked: Boolean value indicating whether the photo is liked.
+    func updatePhotoLikeStatus(photoId: String, isLiked: Bool) {
+        if let index = photos.firstIndex(where: { $0.id == photoId }) {
+            photos[index].isLiked = isLiked
+            NotificationCenter.default.post(name: ImageListService.didChangeNotification, object: nil)
+        }
+    }
+    
     private func updatePhotos(_ newPhotos: [Photo]){
         DispatchQueue.main.async {
             self.photos.append(contentsOf: newPhotos)
@@ -58,6 +100,7 @@ final class ImageListService {
             self.isFetching = false
         }
     }
+
     func fetchPhotosNextPage() {
         guard !isFetching else { return }
         
@@ -96,9 +139,7 @@ final class ImageListService {
                     guard let date = ISO8601DateFormatter().date(from: photoResult.createdAt) else {
                         print("Error converting createdAt to Date")
                         return nil
-                        
                     }
-                    
                     
                     return Photo(
                         id: photoResult.id,
@@ -118,8 +159,4 @@ final class ImageListService {
         }
         task.resume()
     }
-
 }
-
-
-

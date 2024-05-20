@@ -67,8 +67,6 @@ final class ProfileViewContoller: UIViewController{
             placeholder: UIImage(named: "placeholder.jpeg"),
             options: [.processor(processor)])
         configureProfileImage(imageView: image)
-        
-        // TODO [Sprint 11] Обновитt аватар, используя Kingfisher
     }
     
     private func removeObserver() {

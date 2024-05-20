@@ -5,9 +5,30 @@ final class ImagesListViewController: UIViewController {
     
     // MARK: - Properties
     @IBOutlet private var tableView: UITableView!
-    
     private let ShowSingleImageViewIdentifier = "ShowSingleImage"
     private var imageListService = ImageListService()
+    @IBAction func likeButtonAction(_ sender: UIButton) {
+        guard let cell = sender.superview?.superview as? ImagesListCell,
+              let indexPath = tableView.indexPath(for: cell) else {
+            return
+        }
+        
+        var photo = imageListService.photos[indexPath.row]
+        let shouldLike = !photo.isLiked
+        
+        imageListService.changeLike(photoId: photo.id, isLike: shouldLike) { [weak self] result in
+            switch result {
+            case .success:
+                photo.isLiked = shouldLike
+                self?.imageListService.photos[indexPath.row] = photo
+                DispatchQueue.main.async {
+                    cell.likeButton.setImage(shouldLike ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off"), for: .normal)
+                }
+            case .failure(let error):
+                print("Failed to change like status: \(error)")
+            }
+        }
+    }
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -19,6 +40,7 @@ final class ImagesListViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        clearCache()
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         tableView.delegate = self
         tableView.dataSource = self
@@ -28,6 +50,12 @@ final class ImagesListViewController: UIViewController {
     }
     
     // MARK: - Functions
+    private func clearCache() {
+        let cache = ImageCache.default
+        cache.clearMemoryCache()
+        cache.clearDiskCache()
+    }
+    
     @objc func updateTableViewAnimated() {
         DispatchQueue.main.async {
             self.tableView.reloadData()
@@ -44,6 +72,29 @@ final class ImagesListViewController: UIViewController {
             viewController.imageURL = URL(string: photo.largeImageURL)
         } else {
             super.prepare(for: segue, sender: sender)
+        }
+    }
+    
+    @objc private func likeButtonTapped(_ sender: UIButton) {
+        guard let cell = sender.superview?.superview as? ImagesListCell,
+              let indexPath = tableView.indexPath(for: cell) else {
+            return
+        }
+        
+        var photo = imageListService.photos[indexPath.row]
+        let shouldLike = !photo.isLiked
+        
+        imageListService.changeLike(photoId: photo.id, isLike: shouldLike) { [weak self] result in
+            switch result {
+            case .success:
+                photo.isLiked = shouldLike
+                self?.imageListService.photos[indexPath.row] = photo
+                DispatchQueue.main.async {
+                    cell.likeButton.setImage(shouldLike ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off"), for: .normal)
+                }
+            case .failure(let error):
+                print("Failed to change like status: \(error)")
+            }
         }
     }
 }
@@ -64,6 +115,7 @@ extension ImagesListViewController: UITableViewDataSource {
         let photo = imageListService.photos[indexPath.row]
         imageListCell.dateLabel.text = dateFormatter.string(from: photo.createdAt ?? Date())
         imageListCell.likeButton.setImage(photo.isLiked ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off"), for: .normal)
+        imageListCell.likeButton.addTarget(self, action: #selector(likeButtonTapped(_:)), for: .touchUpInside)
         
         if let url = URL(string: photo.thumbImageURL) {
             imageListCell.cellImage.kf.setImage(with: url, placeholder: UIImage(named: "placeholder_image"), options: [.transition(.fade(0.2))])
@@ -80,7 +132,6 @@ extension ImagesListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        // Здесь можете использовать фиксированную высоту ячейки
         return 200
     }
 }
