@@ -1,20 +1,66 @@
 import UIKit
+import Kingfisher
+import ProgressHUD
 
 final class SingleImageViewController: UIViewController {
     
+    // MARK: - Properties
     var imageURL: URL?
-    
+    var fullImageURL: URL?
     @IBOutlet private weak var scrollView: UIScrollView!
     @IBOutlet private weak var imageView: UIImageView!
     
-    @IBAction private func clickBackButton(_ sender: Any) {
-        dismiss(animated: true)
+    // MARK: - Lifecycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        scrollView.minimumZoomScale = 0.25
+        scrollView.maximumZoomScale = 1.25
+        scrollView.delegate = self
+        
+        loadImage()
     }
     
-    @IBAction private func tapShareButton(_ sender: Any) {
-        guard let image = imageView.image else { return }
-        let share = UIActivityViewController(activityItems: [image], applicationActivities: nil)
-        present(share, animated: true)
+    // MARK: - Private Methods
+    
+    private func loadImage() {
+        guard let url = fullImageURL else {
+            print("fullImageURL is nil")
+            return
+        }
+        
+        showLoader()
+        imageView.kf.setImage(with: url, completionHandler: { [weak self] result in
+            self?.hideLoader()
+            switch result {
+            case .success(let value):
+                self?.rescaleAndCenterImageInScrollView(image: value.image)
+            case .failure(let error):
+                print("Error loading image: \(error)")
+                self?.showError()
+            }
+        })
+    }
+    
+    private func showLoader() {
+        ProgressHUD.show()
+    }
+    
+    private func hideLoader() {
+        ProgressHUD.dismiss()
+    }
+    
+    private func showError() {
+        let alert = UIAlertController(
+            title: "Error",
+            message: "Что-то пошло не так. Попробовать ещё раз?",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Не надо", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Повторить", style: .default, handler: { [weak self] _ in
+            self?.loadImage()
+        }))
+        present(alert, animated: true)
     }
     
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
@@ -34,27 +80,14 @@ final class SingleImageViewController: UIViewController {
         scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        scrollView.minimumZoomScale = 0.25
-        scrollView.maximumZoomScale = 1.25
-        
-        if let url = imageURL {
-            imageView.kf.setImage(with: url, completionHandler: { [weak self] result in
-                switch result {
-                case .success(let value):
-                    self?.rescaleAndCenterImageInScrollView(image: value.image)
-                case .failure(let error):
-                    print("Error loading image: \(error)")
-                }
-            })
-        } else {
-            print("imageURL is nil")
-        }
+    // MARK: - Actions
+    
+    @IBAction private func clickBackButton(_ sender: Any) {
+        dismiss(animated: true)
     }
 }
 
+// MARK: - UIScrollViewDelegate
 extension SingleImageViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView

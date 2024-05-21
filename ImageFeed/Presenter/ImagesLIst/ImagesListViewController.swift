@@ -6,7 +6,9 @@ final class ImagesListViewController: UIViewController {
     // MARK: - Properties
     @IBOutlet private var tableView: UITableView!
     private let ShowSingleImageViewIdentifier = "ShowSingleImage"
-    private var imageListService = ImageListService()
+    private var isLoadingNextPage = false
+    var photos: [ImageListService.Photo] = []
+    private var imageListService = ImageListService.shared
     @IBAction func likeButtonAction(_ sender: UIButton) {
         guard let cell = sender.superview?.superview as? ImagesListCell,
               let indexPath = tableView.indexPath(for: cell) else {
@@ -38,6 +40,7 @@ final class ImagesListViewController: UIViewController {
     }()
     
     // MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         clearCache()
@@ -69,7 +72,7 @@ final class ImagesListViewController: UIViewController {
                 return
             }
             let photo = imageListService.photos[indexPath.row]
-            viewController.imageURL = URL(string: photo.largeImageURL)
+            viewController.fullImageURL = URL(string: photo.fullImageURL)
         } else {
             super.prepare(for: segue, sender: sender)
         }
@@ -117,7 +120,7 @@ extension ImagesListViewController: UITableViewDataSource {
         imageListCell.likeButton.setImage(photo.isLiked ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off"), for: .normal)
         imageListCell.likeButton.addTarget(self, action: #selector(likeButtonTapped(_:)), for: .touchUpInside)
         
-        if let url = URL(string: photo.thumbImageURL) {
+        if let url = URL(string: photo.regularImageURL) {
             imageListCell.cellImage.kf.setImage(with: url, placeholder: UIImage(named: "placeholder_image"), options: [.transition(.fade(0.2))])
         }
         
@@ -134,4 +137,13 @@ extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 200
     }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row == imageListService.photos.count - 1 {
+            imageListService.fetchPhotosNextPage()
+        }
+    }
+
+    
 }
+

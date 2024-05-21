@@ -14,7 +14,7 @@ final class ProfileImageService {
     private var profileService = ProfileService.shared
     private var task: URLSessionTask?
     private let urlSession = URLSession.shared
-    private (set) var avatarURL: String?
+    var avatarURL: String?
     private var nickname: String?
     private enum ProfileImageServiceError: Error {
         case invalidRequest

@@ -22,9 +22,10 @@ final class ProfileViewContoller: UIViewController{
     private let tokenStorage = OAuth2TokenStorage()
     private let profileService = ProfileService.shared
     private var profileImageServiceObserver: NSObjectProtocol?
+    private let logoutService = ProfileLogoutService.shared
     
     @objc private func didTapButton() {
-        //TODO: Доделать кнопку
+        logoutService.logout()
     }
     
     //MARK: - Lifecycle

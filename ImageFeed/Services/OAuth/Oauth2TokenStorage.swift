@@ -8,14 +8,19 @@ final class OAuth2TokenStorage {
     
      var token: String? { //MARK: Token Storage
         get {
-            print("getting token with keychain - \(String(describing: KeychainWrapper.standard.string(forKey: Keys.token.rawValue)))")
+            print("Getting token with keychain - \(String(describing: KeychainWrapper.standard.string(forKey: Keys.token.rawValue)))")
             return KeychainWrapper.standard.string(forKey: Keys.token.rawValue)
         }
         set {
-            print("setting new token with keychain - \(String(describing: newValue))")
+            print("Setting new token with keychain - \(String(describing: newValue))")
             KeychainWrapper.standard.set(newValue ?? "", forKey: Keys.token.rawValue)
 
         }
+    }
+    
+    func removeToken() {
+        print("Removing token from keychain")
+        KeychainWrapper.standard.removeObject(forKey: Keys.token.rawValue)
     }
     
     func removeAll() {
