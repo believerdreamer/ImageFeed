@@ -32,10 +32,11 @@ final class ProfileLogoutService {
     
     private func switchToInitialViewController() {
         guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
-        let tabBarController = UIStoryboard(name: "Main", bundle: .main)
-            .instantiateViewController(withIdentifier: "AuthViewController")
-        tabBarController.modalPresentationStyle = .fullScreen
-        window.rootViewController = tabBarController
+//        let tabBarController = UIStoryboard(name: "Main", bundle: .main)
+//            .instantiateViewController(withIdentifier: "SplashViewController")
+        let splash = SplashViewController()
+        splash.modalPresentationStyle = .fullScreen
+        window.rootViewController = splash
     }
     
 

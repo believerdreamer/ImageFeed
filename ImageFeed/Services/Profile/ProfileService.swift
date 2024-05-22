@@ -66,6 +66,7 @@ final class ProfileService {
                     completion(.failure(error))
                 }
             }
+            self.task = nil
         }
         self.task = task
         task.resume()

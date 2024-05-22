@@ -84,6 +84,7 @@ final class SingleImageViewController: UIViewController {
     
     @IBAction private func clickBackButton(_ sender: Any) {
         dismiss(animated: true)
+        UIBlockingPorgressHUD.dismiss()
     }
 }
 
