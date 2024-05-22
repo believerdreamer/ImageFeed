@@ -10,6 +10,7 @@ final class ProfileLogoutService {
     
     private init() { }
     
+    
     func logout() {
         storage.removeToken()
         cleanCookies()
@@ -17,9 +18,8 @@ final class ProfileLogoutService {
         profileImageService.avatarURL = " "
         profileSevice.profileData = nil
         switchToInitialViewController()
-        
     }
-    
+
     private func cleanCookies() {
         HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
         
@@ -32,8 +32,6 @@ final class ProfileLogoutService {
     
     private func switchToInitialViewController() {
         guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
-//        let tabBarController = UIStoryboard(name: "Main", bundle: .main)
-//            .instantiateViewController(withIdentifier: "SplashViewController")
         let splash = SplashViewController()
         splash.modalPresentationStyle = .fullScreen
         window.rootViewController = splash

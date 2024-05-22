@@ -25,7 +25,7 @@ final class ProfileViewContoller: UIViewController{
     private let logoutService = ProfileLogoutService.shared
     
     @objc private func didTapButton() {
-        logoutService.logout()
+        showByeAlertAndLogout()
     }
     
     //MARK: - Lifecycle
@@ -54,6 +54,22 @@ final class ProfileViewContoller: UIViewController{
     }
     
     //MARK: - Functions
+    private func showByeAlertAndLogout() {
+        let alert = UIAlertController(
+            title: "Пока, пока!",
+            message: "Уверены, что хотите выйти?",
+            preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Да", style: .default, handler: { [weak self] _ in
+            self?.logoutService.logout()
+        }))
+
+        alert.addAction(UIAlertAction(title: "Нет", style: .cancel, handler: { [weak self] _ in
+            self?.dismiss(animated: true)
+        }))
+
+        present(alert, animated: true)
+    }
+
     private func updateAvatar(){
         
         guard

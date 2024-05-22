@@ -20,6 +20,14 @@ final class SingleImageViewController: UIViewController {
         
         loadImage()
     }
+    //MARK
+    @IBAction private func tapShareButton(_ sender: Any) {
+          let share = UIActivityViewController(
+              activityItems: [imageView ?? UIImage()],
+              applicationActivities: nil)
+          
+          present(share, animated: true)
+      }
     
     // MARK: - Private Methods
     
@@ -43,11 +51,11 @@ final class SingleImageViewController: UIViewController {
     }
     
     private func showLoader() {
-        ProgressHUD.show()
+        UIBlockingPorgressHUD.show()
     }
     
     private func hideLoader() {
-        ProgressHUD.dismiss()
+        UIBlockingPorgressHUD.dismiss()
     }
     
     private func showError() {
