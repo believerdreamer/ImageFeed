@@ -9,12 +9,17 @@ protocol AuthViewControllerDelegate: AnyObject {
 
 class AuthViewController: UIViewController {
     
-    // MARK: - Properties
+    //MARK: - Private constants
     
-    weak var delegate: AuthViewControllerDelegate?
+    private let oauth2Service = OAuth2Service()
+    
+    // MARK: - Private properties
     
     private var showWebViewSegueIdentifier = "ShowWebView"
-    private let oauth2Service = OAuth2Service()
+    
+    //MARK: - Public properties
+    
+    weak var delegate: AuthViewControllerDelegate?
     
     // MARK: - Segue
     

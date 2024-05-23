@@ -8,15 +8,17 @@ protocol WebViewViewControllerDelegate: AnyObject{
     func webViewViewControllerDidCancel(_ vc: WebViewViewController)
 }
 
-// MARK: - WebViewViewController
+// MARK: - UIViewController
 
 final class WebViewViewController: UIViewController {
     
-    // MARK: - Properties
+    // MARK: - Private properties
+    
+    private var estimatedProgressObservation: NSKeyValueObservation?
+    
+    // MARK: - Public properties
     
     weak var delegate: WebViewViewControllerDelegate?
-    private let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
-    private var estimatedProgressObservation: NSKeyValueObservation?
     
     // MARK: - IBOutlet
     
@@ -38,7 +40,7 @@ final class WebViewViewController: UIViewController {
         loadWebView()
     }
     
-    // MARK: - Private Functions
+    // MARK: - Private Methods
     
     private func updateProgress() {
         progressView.progress = 0.1
@@ -52,7 +54,7 @@ final class WebViewViewController: UIViewController {
         }
     }
     
-    // MARK: - Actions
+    // MARK: - IBAction
     
     @IBAction func didTapBackButton(_ sender: Any) {
         delegate?.webViewViewControllerDidCancel(self)
@@ -62,9 +64,6 @@ final class WebViewViewController: UIViewController {
 // MARK: - WKNavigationDelegate
 
 extension WebViewViewController: WKNavigationDelegate {
-    
-    // MARK: WebView Loading
-    
     func loadWebView() {
         var urlComponents = URLComponents(string: unsplashAuthorizeURLString)
         urlComponents?.queryItems = [

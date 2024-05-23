@@ -2,14 +2,24 @@ import UIKit
 import WebKit
 
 final class ProfileLogoutService {
-    static let shared = ProfileLogoutService()
+    
+    // MARK: - Publuc Properties
+    
     var profileSevice = ProfileService.shared
     var profileImageService = ProfileImageService.shared
     var imageListService = ImageListService.shared
+    
+    // MARK: - Public Constants
+    
+    static let shared = ProfileLogoutService()
+    
+    // MARK: - Private Properties
+    
     private var storage = OAuth2TokenStorage()
     
     private init() { }
     
+    // MARK: - Public Methods
     
     func logout() {
         storage.removeToken()
@@ -17,8 +27,9 @@ final class ProfileLogoutService {
         imageListService.photos.removeAll()
         profileImageService.avatarURL = " "
         profileSevice.profileData = nil
-        switchToInitialViewController()
     }
+    
+    // MARK: - Private Methods
 
     private func cleanCookies() {
         HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
@@ -30,12 +41,7 @@ final class ProfileLogoutService {
         }
     }
     
-    private func switchToInitialViewController() {
-        guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
-        let splash = SplashViewController()
-        splash.modalPresentationStyle = .fullScreen
-        window.rootViewController = splash
-    }
+
     
 
 }

@@ -4,9 +4,12 @@ import ProgressHUD
 
 final class SingleImageViewController: UIViewController {
     
-    // MARK: - Properties
+    // MARK: - Public Properties
     var imageURL: URL?
     var fullImageURL: URL?
+    
+    //MARK: - IBOutlet
+    
     @IBOutlet private weak var scrollView: UIScrollView!
     @IBOutlet private weak var imageView: UIImageView!
     
@@ -20,7 +23,13 @@ final class SingleImageViewController: UIViewController {
         
         loadImage()
     }
-    //MARK
+    // MARK: - IBAction
+    
+    @IBAction private func clickBackButton(_ sender: Any) {
+        dismiss(animated: true)
+        UIBlockingPorgressHUD.dismiss()
+    }
+    
     @IBAction private func tapShareButton(_ sender: Any) {
           let share = UIActivityViewController(
               activityItems: [imageView ?? UIImage()],
@@ -86,13 +95,6 @@ final class SingleImageViewController: UIViewController {
         let x = (newContentSize.width - visibleRectSize.width) / 2
         let y = (newContentSize.height - visibleRectSize.height) / 2
         scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
-    }
-    
-    // MARK: - Actions
-    
-    @IBAction private func clickBackButton(_ sender: Any) {
-        dismiss(animated: true)
-        UIBlockingPorgressHUD.dismiss()
     }
 }
 

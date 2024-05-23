@@ -2,39 +2,31 @@ import UIKit
 import Kingfisher
 import SwiftKeychainWrapper
 
-//MARK:  - UIViewController
+// MARK: - UIViewController
 
-final class ProfileViewContoller: UIViewController{
+final class ProfileViewController: UIViewController {
     
-    struct Profile {
-        var username: String
-        var name: String
-        var loginName: String
-        var bio: String
-    }
-    
-    deinit {
-        removeObserver()
-    }
-    
-    //MARK: - Properties
+    // MARK: - Private Constants
     private let userDefaults = UserDefaults.standard
     private let tokenStorage = OAuth2TokenStorage()
     private let profileService = ProfileService.shared
-    private var profileImageServiceObserver: NSObjectProtocol?
     private let logoutService = ProfileLogoutService.shared
     
-    @objc private func didTapButton() {
-        showByeAlertAndLogout()
-    }
+    // MARK: - Private properties
+    private var profileImageServiceObserver: NSObjectProtocol?
+    private var profileImageView: UIImageView!
+    private var avatarGradient: CAGradientLayer?
     
-    //MARK: - Lifecycle
+    // MARK: - Lifecycle
     override func viewDidLoad() {
-        view.backgroundColor = UIColor(named: "YPBlack")
         super.viewDidLoad()
+        view.backgroundColor = UIColor(named: "YPBlack")
+        
+        setupProfileImageView()
         clearCache()
         updateAvatar()
         configureExitButton()
+        
         guard let profileData = profileService.profileData else {
             assertionFailure("profile data in ProfileViewController is nil")
             return
@@ -53,7 +45,65 @@ final class ProfileViewContoller: UIViewController{
         updateAvatar()
     }
     
-    //MARK: - Functions
+    deinit {
+        removeObserver()
+    }
+    
+    // MARK: - Private Methods
+    
+    private func setupProfileImageView() {
+        profileImageView = UIImageView()
+        profileImageView.contentMode = .scaleAspectFill
+        profileImageView.layer.masksToBounds = true
+        profileImageView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(profileImageView)
+        
+        NSLayoutConstraint.activate([
+            profileImageView.heightAnchor.constraint(equalToConstant: 70),
+            profileImageView.widthAnchor.constraint(equalToConstant: 70),
+            profileImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
+            profileImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16)
+        ])
+        
+        profileImageView.layer.cornerRadius = 35
+        addAvatarGradient()
+    }
+    
+    private func addAvatarGradient() {
+        if let existingGradient = avatarGradient {
+            existingGradient.removeFromSuperlayer()
+        }
+        
+        let avatarGradientColors = [
+            UIColor(red: 0.682, green: 0.686, blue: 0.706, alpha: 1).cgColor,
+            UIColor(red: 0.531, green: 0.533, blue: 0.553, alpha: 1).cgColor,
+            UIColor(red: 0.431, green: 0.433, blue: 0.453, alpha: 1).cgColor
+        ]
+        
+        let gradient = CAGradientLayer()
+        gradient.frame = profileImageView.bounds
+        gradient.colors = avatarGradientColors
+        gradient.startPoint = CGPoint(x: 0, y: 0.5)
+        gradient.endPoint = CGPoint(x: 1, y: 0.5)
+        gradient.cornerRadius = 35
+        
+        profileImageView.layer.insertSublayer(gradient, at: 0)
+        addGradientAnimation(to: gradient, fromValue: [0, 0.1, 0.3], toValue: [0, 0.8, 1], duration: 1.0)
+        
+        avatarGradient = gradient
+    }
+    
+    private func switchToInitialViewController() {
+        guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
+        let splash = SplashViewController()
+        splash.modalPresentationStyle = .fullScreen
+        window.rootViewController = splash
+    }
+    
+    @objc private func didTapButton() {
+        showByeAlertAndLogout()
+    }
+    
     private func showByeAlertAndLogout() {
         let alert = UIAlertController(
             title: "Пока, пока!",
@@ -61,29 +111,38 @@ final class ProfileViewContoller: UIViewController{
             preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Да", style: .default, handler: { [weak self] _ in
             self?.logoutService.logout()
+            self?.switchToInitialViewController()
         }))
-
+        
         alert.addAction(UIAlertAction(title: "Нет", style: .cancel, handler: { [weak self] _ in
             self?.dismiss(animated: true)
         }))
-
+        
         present(alert, animated: true)
     }
-
-    private func updateAvatar(){
+    
+    private func updateAvatar() {
+        guard let profileImageURL = ProfileImageService.shared.avatarURL,
+              let url = URL(string: profileImageURL) else {
+            return
+        }
         
-        guard
-            let profileImageURL = ProfileImageService.shared.avatarURL,
-            let url = URL(string: profileImageURL)
-        else { return }
-        let image = UIImageView()
-        image.layer.masksToBounds = true
+        // Используем Kingfisher для загрузки изображения
         let processor = RoundCornerImageProcessor(cornerRadius: 60)
-        image.kf.setImage(
+        profileImageView.kf.setImage(
             with: url,
-            placeholder: UIImage(named: "placeholder.jpeg"),
-            options: [.processor(processor)])
-        configureProfileImage(imageView: image)
+            placeholder: nil, // Убираем заглушку, так как мы показываем градиент
+            options: [.processor(processor)]) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(_):
+                    // Изображение успешно загружено, удаляем градиентный слой
+                    self.avatarGradient?.removeFromSuperlayer()
+                case .failure(_):
+                    // Произошла ошибка загрузки изображения
+                    print("Failed to load profile image.")
+                }
+        }
     }
     
     private func removeObserver() {
@@ -97,19 +156,6 @@ final class ProfileViewContoller: UIViewController{
         let cache = ImageCache.default
         cache.clearMemoryCache()
         cache.clearDiskCache()
-    }
-    
-    
-    //MARK: - Configure screen objects
-    private func configureProfileImage(imageView: UIImageView) {
-        imageView.tintColor = .gray
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(imageView)
-        imageView.heightAnchor.constraint(equalToConstant: 70).isActive = true
-        imageView.widthAnchor.constraint(equalToConstant: 70).isActive = true
-        imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32).isActive = true
-        imageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
-        imageView.layer.cornerRadius = 20
     }
     
     private func configureExitButton() {
@@ -127,7 +173,7 @@ final class ProfileViewContoller: UIViewController{
         button.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16).isActive = true
     }
     
-    private func configureNameLabel(with text: ProfileService.Profile) {
+    private func configureNameLabel(with text: Profile) {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
@@ -139,7 +185,7 @@ final class ProfileViewContoller: UIViewController{
         label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
     }
     
-    private func configureNickname(with text: ProfileService.Profile) {
+    private func configureNickname(with text: Profile) {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
@@ -150,7 +196,7 @@ final class ProfileViewContoller: UIViewController{
         label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
     }
     
-    private func configureDescription(with text: ProfileService.Profile) {
+    private func configureDescription(with text: Profile) {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
@@ -161,10 +207,28 @@ final class ProfileViewContoller: UIViewController{
         label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 170).isActive = true
     }
     
-    private func configureUIWithProfileData(data: ProfileService.Profile) {
+    private func configureUIWithProfileData(data: Profile) {
         configureNickname(with: data)
         configureDescription(with: data)
         configureNameLabel(with: data)
     }
+}
+
+extension ProfileViewController {
+    func addGradientAnimation(to gradient: CAGradientLayer, fromValue: [NSNumber], toValue: [NSNumber], duration: CFTimeInterval) {
+        let gradientChangeAnimation = CABasicAnimation(keyPath: "locations")
+        gradientChangeAnimation.duration = duration
+        gradientChangeAnimation.repeatCount = .infinity
+        gradientChangeAnimation.fromValue = fromValue
+        gradientChangeAnimation.toValue = toValue
+        gradient.add(gradientChangeAnimation, forKey: "locationsChange")
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        // Обновляем градиентный слой при изменении размеров родительского представления
+        avatarGradient?.frame = profileImageView.bounds
+    }
+    
     
 }

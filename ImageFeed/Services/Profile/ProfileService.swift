@@ -3,37 +3,27 @@ import Kingfisher
 
 final class ProfileService {
     
-    //MARK: Properties
-    
-    static let shared = ProfileService() //MARK: Singleton
     private init(){}
-    var profileData: Profile?
+    
+    // MARK: - Public Constants
+    
+    static let shared = ProfileService()
+    
+    // MARK: - Private Constants
+    
     private let urlSession = URLSession.shared
-    private var task: URLSessionTask?
+    
     private enum ProfileServiceError: Error {
         case invalidRequest
     }
     
-    struct ProfileResult: Codable {
-        let username: String
-        let first_name: String
-        let last_name: String
-        let bio: String?
-    }
+    // MARK: - Public Properties
     
-    struct Profile {
-        var username: String
-        var name: String
-        var loginName: String
-        var bio: String
-        
-        init(username: String, name: String, loginName: String, bio: String) {
-            self.username = username
-            self.name = name
-            self.loginName = loginName
-            self.bio = bio
-        }
-    }
+    var profileData: Profile?
+    
+    // MARK: - Private Properties
+    
+    private var task: URLSessionTask?
     
     //MARK: Functions
     func makeProfileRequest(token: String) -> URLRequest? {
