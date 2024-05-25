@@ -46,7 +46,7 @@ final class ProfileViewContoller: UIViewController{
         updateAvatar()
     }
     
-    //MARK: - Functions
+    //MARK: - Private Functions
     private func showByeAlertAndLogout() {
         let alert = UIAlertController(
             title: "Пока, пока!",
@@ -54,6 +54,8 @@ final class ProfileViewContoller: UIViewController{
             preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Да", style: .default, handler: { [weak self] _ in
             self?.logoutService.logout()
+            self?.switchToInitialViewController()
+            
         }))
 
         alert.addAction(UIAlertAction(title: "Нет", style: .cancel, handler: { [weak self] _ in
@@ -92,8 +94,6 @@ final class ProfileViewContoller: UIViewController{
         cache.clearDiskCache()
     }
     
-    
-    //MARK: - Configure screen objects
     private func configureProfileImage(imageView: UIImageView) {
         imageView.tintColor = .gray
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -159,5 +159,12 @@ final class ProfileViewContoller: UIViewController{
         configureDescription(with: data)
         configureNameLabel(with: data)
     }
+    
+    private func switchToInitialViewController() {
+            guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
+            let splash = SplashViewController()
+            splash.modalPresentationStyle = .fullScreen
+            window.rootViewController = splash
+        }
     
 }
