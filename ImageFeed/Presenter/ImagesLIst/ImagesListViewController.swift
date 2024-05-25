@@ -109,8 +109,16 @@ final class ImagesListViewController: UIViewController {
     // MARK: - Public Functions
     
     @objc func updateTableViewAnimated() {
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
+        let oldCount = photos.count
+        let newCount = imageListService.photos.count
+        photos = imageListService.photos
+        if oldCount != newCount {
+            tableView.performBatchUpdates {
+                let indexPaths = (oldCount..<newCount).map { i in
+                    IndexPath(row: i, section: 0)
+                }
+                tableView.insertRows(at: indexPaths, with: .automatic)
+            } completion: { _ in }
         }
     }
     
@@ -146,8 +154,8 @@ extension ImagesListViewController: UITableViewDataSource {
         imageListCell.likeButton.setImage(photo.isLiked ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off"), for: .normal)
         imageListCell.likeButton.addTarget(self, action: #selector(likeButtonTapped(_:)), for: .touchUpInside)
         
-        if let url = URL(string: photo.regularImageURL) {
-            imageListCell.cellImage.kf.setImage(with: url, placeholder: UIImage(named: "placeholder_image"), options: [.transition(.fade(0.2))]) { result in
+        if let url = URL(string: photo.smallImageURL) {
+            imageListCell.cellImage.kf.setImage(with: url, placeholder: UIImage(named: "placeholder_feed"), options: [.transition(.fade(0.2))]) { result in
                 switch result {
                 case .success(let value):
                     let imageSize = value.image.size
@@ -169,16 +177,9 @@ extension ImagesListViewController: UITableViewDataSource {
 extension ImagesListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let photo = imageListService.photos[indexPath.row]
-        let aspectRatio = photo.size.height / photo.size.width
-        let cellWidth = tableView.frame.width
-        let cellHeight = cellWidth * aspectRatio
-        // Проверяем, что высота ячейки не равна нулю и не NaN, иначе используем автоматический расчет высоты
-        if cellHeight.isFinite && cellHeight > 0 {
-            return cellHeight
-        } else {
+
             return UITableView.automaticDimension
-        }
+        
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

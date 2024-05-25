@@ -27,7 +27,7 @@ final class ImageListService {
         isFetching = true
         lastLoadedPage += 1
         
-        let urlString = "https://api.unsplash.com/photos?page=\(lastLoadedPage)&per_page=20&order_by=latest"
+        let urlString = "https://api.unsplash.com/photos?page=\(lastLoadedPage)&per_page=10&order_by=latest"
         
         guard let url = URL(string: urlString) else {
             print("Invalid URL")
@@ -80,6 +80,7 @@ final class ImageListService {
                         thumbImageURL: photoResult.urls.thumb,
                         fullImageURL: photoResult.urls.full,
                         regularImageURL: photoResult.urls.regular,
+                        smallImageURL: photoResult.urls.small,
                         isLiked: false
                     )
                 }

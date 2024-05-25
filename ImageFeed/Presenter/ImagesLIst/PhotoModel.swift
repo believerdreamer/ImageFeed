@@ -14,5 +14,6 @@ struct Photo {
     let thumbImageURL: String
     let fullImageURL: String
     let regularImageURL: String
+    let smallImageURL: String
     var isLiked: Bool
 }
