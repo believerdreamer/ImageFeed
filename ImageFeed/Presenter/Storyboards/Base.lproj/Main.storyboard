@@ -253,10 +253,10 @@
             </objects>
             <point key="canvasLocation" x="-1033" y="-44"/>
         </scene>
-        <!--Web View View Controller-->
+        <!--WebViewViewController-->
         <scene sceneID="VP7-Ss-0ah">
             <objects>
-                <viewController id="cTg-4i-Plk" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="WebViewViewController" title="WebViewViewController" id="cTg-4i-Plk" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="cmz-4d-o19">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>

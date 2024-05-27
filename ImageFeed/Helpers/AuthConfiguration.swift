@@ -21,7 +21,6 @@ struct AuthConfiguration {
             accessScope: Constants.accessScope,
             authURLString: Constants.unsplashAuthorizeURLString,
             defaultBaseURL: Constants.defaultBaseURL
-            
         )
     }
     
