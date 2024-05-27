@@ -4,11 +4,13 @@ import SwiftKeychainWrapper
 
 //MARK:  - UIViewController
 
-final class ProfileViewContoller: UIViewController{
+protocol ProfileViewControllerProtocol: AnyObject {
+    func updateAvatar()
+    func updateProfileData(data: Profile)
+}
+
+final class ProfileViewContoller: UIViewController, ProfileViewControllerProtocol{
     
-    deinit {
-        removeObserver()
-    }
     
     //MARK: - Properties
     private let userDefaults = UserDefaults.standard
@@ -27,12 +29,16 @@ final class ProfileViewContoller: UIViewController{
         super.viewDidLoad()
         clearCache()
         updateAvatar()
-        configureExitButton()
+        addSubViews()
+        applyConstraints()
+        guard let profileData = profileService.profileData else {
+            return
+        }
+        updateProfileData(data: profileData)
         guard let profileData = profileService.profileData else {
             assertionFailure("profile data in ProfileViewController is nil")
             return
         }
-        configureUIWithProfileData(data: profileData)
         
         profileImageServiceObserver = NotificationCenter.default
             .addObserver(
@@ -52,40 +58,31 @@ final class ProfileViewContoller: UIViewController{
             title: "Пока, пока!",
             message: "Уверены, что хотите выйти?",
             preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Да", style: .default, handler: { [weak self] _ in
-            self?.logoutService.logout()
-            self?.switchToInitialViewController()
-            
-        }))
-
+        alert.addAction(UIAlertAction(
+            title: "Да",
+            style: .default,
+            handler: { [weak self] _ in
+                self?.logoutService.logout()
+                self?.switchToInitialViewController()
+                
+            }))
+        
         alert.addAction(UIAlertAction(title: "Нет", style: .cancel, handler: { [weak self] _ in
             self?.dismiss(animated: true)
         }))
-
+        
         present(alert, animated: true)
     }
-
-    private func updateAvatar(){
-        
+    
+    internal func updateAvatar(){
+        profileImage.kf.indicatorType = .activity
         guard
             let profileImageURL = ProfileImageService.shared.avatarURL,
-            let url = URL(string: profileImageURL)
-        else { return }
-        let image = UIImageView()
-        image.layer.masksToBounds = true
-        let processor = RoundCornerImageProcessor(cornerRadius: 60)
-        image.kf.setImage(
-            with: url,
-            placeholder: UIImage(named: "placeholder.jpeg"),
-            options: [.processor(processor)])
-        configureProfileImage(imageView: image)
-    }
-    
-    private func removeObserver() {
-        NotificationCenter.default.removeObserver(
-            self,
-            name: ProfileImageService.didChangeNotification,
-            object: nil)
+            let url = URL(string: profileImageURL) else { return }
+        profileImage.kf.setImage(with: url, placeholder: UIImage(named: "avatar_placeholder"))
+        let cache = ImageCache.default
+        cache.clearMemoryCache()
+        cache.clearDiskCache()
     }
     
     private func clearCache() {
@@ -94,77 +91,94 @@ final class ProfileViewContoller: UIViewController{
         cache.clearDiskCache()
     }
     
-    private func configureProfileImage(imageView: UIImageView) {
-        imageView.tintColor = .gray
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(imageView)
-        imageView.heightAnchor.constraint(equalToConstant: 70).isActive = true
-        imageView.widthAnchor.constraint(equalToConstant: 70).isActive = true
-        imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32).isActive = true
-        imageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
-        imageView.layer.cornerRadius = 20
+    private func addSubViews(){
+        view.addSubview(profileImage)
+        view.addSubview(nameLabel)
+        view.addSubview(nickname)
+        view.addSubview(descriptionLabel)
+        view.addSubview(logoutButton)
     }
     
-    private func configureExitButton() {
-        let button = UIButton.systemButton(
-            with: UIImage(systemName: "ipad.and.arrow.forward")!,
-            target: self,
-            action: #selector(self.didTapButton))
+    private func applyConstraints(){
+        profileImage.translatesAutoresizingMaskIntoConstraints = false
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        nickname.translatesAutoresizingMaskIntoConstraints = false
+        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        logoutButton.translatesAutoresizingMaskIntoConstraints = false
         
-        button.tintColor = UIColor(named: "YPRed")
-        button.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(button)
-        button.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        button.widthAnchor.constraint(equalToConstant: 44).isActive = true
-        button.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 45).isActive = true
-        button.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16).isActive = true
+        NSLayoutConstraint.activate([
+            profileImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            profileImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
+            profileImage.widthAnchor.constraint(equalToConstant: 70),
+            profileImage.heightAnchor.constraint(equalToConstant: 70),
+            nameLabel.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
+            nameLabel.topAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: 8),
+            nameLabel.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
+            nameLabel.topAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: 8),
+            nickname.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
+            nickname.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
+            descriptionLabel.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
+            descriptionLabel.topAnchor.constraint(equalTo: nickname.bottomAnchor, constant: 8),
+            logoutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            logoutButton.centerYAnchor.constraint(equalTo: profileImage.centerYAnchor)
+        ])
     }
     
-    private func configureNameLabel(with text: Profile) {
+    private var profileImage: UIImageView = {
+        let profileImage = UIImageView(image: UIImage(named: "Avatar"))
+        profileImage.layer.cornerRadius = 35
+        profileImage.clipsToBounds = true
+        return profileImage
+    }()
+    
+    private var nameLabel: UILabel = {
         let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(label)
-        label.text = profileService.profileData?.name
-        label.font = UIFont.boldSystemFont(ofSize: 23)
+        label.text = "Екатерина Новикова"
+        label.font = UIFont.systemFont(ofSize: 23, weight: .bold)
         label.textColor = .white
-        label.widthAnchor.constraint(equalToConstant: 241).isActive = true
-        label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 110).isActive = true
-        label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
-    }
+        return label
+    }()
     
-    private func configureNickname(with text: Profile) {
+    private var nickname: UILabel = {
         let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(label)
-        label.text = "@" + (profileService.profileData?.username ?? "default")
+        label.text = "Екатерина Новикова"
         label.font = UIFont.systemFont(ofSize: 13)
         label.textColor = UIColor(named: "YPGrey")
-        label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 144).isActive = true
-        label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
-    }
+        return label
+    }()
     
-    private func configureDescription(with text: Profile) {
+    private var descriptionLabel: UILabel = {
         let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(label)
+        label.text = "Hello, world!"
         label.font = UIFont.systemFont(ofSize: 13)
         label.textColor = .white
-        label.text = profileService.profileData?.bio
-        label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
-        label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 170).isActive = true
-    }
+        return label
+    }()
     
-    private func configureUIWithProfileData(data: Profile) {
-        configureNickname(with: data)
-        configureDescription(with: data)
-        configureNameLabel(with: data)
+    private var logoutButton: UIButton = {
+        let button = UIButton.systemButton(
+            with: UIImage(systemName: "ipad.and.arrow.forward")!,
+            target: ProfileViewContoller.self,
+            action: #selector(didTapButton))
+        button.tintColor = UIColor(named: "YPRed")
+        return button
+    }()
+    
+    internal func updateProfileData(data: Profile) {
+        guard let profile = profileService.profileData else {
+            assertionFailure("Profile is doesnt exist")
+            return
+        }
+        self.nameLabel.text = profile.name
+        self.nickname.text = "@" + profile.username
+        self.descriptionLabel.text = profile.bio
     }
     
     private func switchToInitialViewController() {
-            guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
-            let splash = SplashViewController()
-            splash.modalPresentationStyle = .fullScreen
-            window.rootViewController = splash
-        }
+        guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
+        let splash = SplashViewController()
+        splash.modalPresentationStyle = .fullScreen
+        window.rootViewController = splash
+    }
     
 }
