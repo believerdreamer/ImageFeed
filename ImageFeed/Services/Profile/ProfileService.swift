@@ -27,7 +27,7 @@ final class ProfileService {
     
     //MARK: Functions
     func makeProfileRequest(token: String) -> URLRequest? {
-        guard let url = profileURL else {return nil}
+        guard let url = Constants.profileURL else {return nil}
         var request = URLRequest(url: url)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         return request
