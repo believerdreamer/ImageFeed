@@ -69,7 +69,7 @@ final class SingleImageViewController: UIViewController {
     
     private func showError() {
         let alert = UIAlertController(
-            title: "Error",
+            title: "Ошибка",
             message: "Что-то пошло не так. Попробовать ещё раз?",
             preferredStyle: .alert
         )
