@@ -1,41 +1,31 @@
 import Foundation
+import Kingfisher
 
 final class ProfileService {
     
-    //MARK: Properties
-    
-    static let shared = ProfileService() //MARK: Singleton
     private init(){}
-    var profileData: Profile?
+    
+    // MARK: - Public Constants
+    
+    static let shared = ProfileService()
+    
+    // MARK: - Private Constants
+    
     private let urlSession = URLSession.shared
-    private var task: URLSessionTask?
+    
     private enum ProfileServiceError: Error {
         case invalidRequest
     }
     
-    struct ProfileResult: Codable {
-        let username: String
-        let first_name: String
-        let last_name: String
-        let bio: String?
-    }
+    // MARK: - Public Properties
     
-    struct Profile {
-        var username: String
-        var name: String
-        var loginName: String
-        var bio: String
-        
-        init(username: String, name: String, loginName: String, bio: String) {
-            self.username = username
-            self.name = name
-            self.loginName = loginName
-            self.bio = bio
-        }
-    }
+    var profileData: Profile?
+    
+    // MARK: - Private Properties
+    
+    private var task: URLSessionTask?
     
     //MARK: Functions
-    
     func makeProfileRequest(token: String) -> URLRequest? {
         guard let url = profileURL else {return nil}
         var request = URLRequest(url: url)
@@ -46,7 +36,7 @@ final class ProfileService {
     func fetchProfile(
         token: String,
         completion: @escaping (Result<Profile, Error>) -> Void
-    ) {
+    ) { 
         guard let request = makeProfileRequest(token: token) else {
             completion(.failure(ProfileServiceError.invalidRequest))
             return
@@ -66,6 +56,7 @@ final class ProfileService {
                     completion(.failure(error))
                 }
             }
+            self.task = nil
         }
         self.task = task
         task.resume()
@@ -87,6 +78,7 @@ final class ProfileService {
             guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
                 let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
                 let errorDescription = HTTPURLResponse.localizedString(forStatusCode: statusCode)
+                print(errorDescription)
                 let error = NetworkError.httpStatusCode(statusCode)
                 print("[fetchProfileTask]: \(error)")
                 completion(.failure(error))

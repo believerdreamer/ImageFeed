@@ -9,28 +9,29 @@ import Foundation
 
 final class ProfileImageService {
     
+    // MARK: - Public Constants
+    
     static let shared = ProfileImageService(); private init(){}
     static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
-    private var profileService = ProfileService.shared
-    private var task: URLSessionTask?
+    
+    // MARK: - Private Constants
+    
     private let urlSession = URLSession.shared
-    private (set) var avatarURL: String?
-    private var nickname: String?
     private enum ProfileImageServiceError: Error {
         case invalidRequest
     }
     
-    struct UserResult: Codable {
-        let profileImage: ProfileImage
-
-        enum CodingKeys: String, CodingKey {
-            case profileImage = "profile_image"
-        }
-    }
+    // MARK: - Private Properties
     
-    struct ProfileImage: Codable {
-        let large: URL
-    }
+    private var profileService = ProfileService.shared
+    private var task: URLSessionTask?
+    private var nickname: String?
+    
+    // MARK: - Public Properties
+    
+    var avatarURL: String?
+    
+    // MARK: - Public Methods
     
     func makeProfileImageRequest(token: String) -> URLRequest? {
         guard let nickname = profileService.profileData?.username else {return nil}
@@ -69,10 +70,13 @@ final class ProfileImageService {
                     completion(.failure(error))
                 }
             }
+            self.task = nil
         }
         self.task = task
         task.resume()
     }
+    
+    // MARK: - Private Methods
     
     private func fetchProfileImageTask(
           request: URLRequest,
@@ -89,6 +93,7 @@ final class ProfileImageService {
               guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
                   let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
                   let errorDescription = HTTPURLResponse.localizedString(forStatusCode: statusCode)
+                  print(errorDescription)
                   let error = NetworkError.httpStatusCode(statusCode)
                   print("[fetchProfileImageTask]: \(error)")
                   completion(.failure(error))

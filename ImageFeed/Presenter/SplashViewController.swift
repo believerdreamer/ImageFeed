@@ -2,7 +2,7 @@ import UIKit
 import ProgressHUD
 import SwiftKeychainWrapper
 
-final class SplashViewController: UIViewController { //MARK: UIViewController
+final class SplashViewController: UIViewController {
     
     //MARK: - Properties
     private let showAuthenticationScreenSegueIdentifier = "ShowAuthFlow"
@@ -12,22 +12,20 @@ final class SplashViewController: UIViewController { //MARK: UIViewController
     private let profileImageService = ProfileImageService.shared
     
     //MARK: - Lifecycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
     }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
-        if storage.token != nil {
+        if let token = storage.token, !token.isEmpty {
             switchToTabBarController()
             guard let token = storage.token else {
                 assertionFailure("failed to get token from storage")
                 return
             }
             fetchProfile(token)
-            
         } else {
             presentAuthViewController()
         }
@@ -36,7 +34,6 @@ final class SplashViewController: UIViewController { //MARK: UIViewController
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setNeedsStatusBarAppearanceUpdate()
-        
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -73,31 +70,45 @@ final class SplashViewController: UIViewController { //MARK: UIViewController
     
     private func fetchProfile(_ token: String) {
         UIBlockingPorgressHUD.show()
-        profileService.fetchProfile(token: token) {result in
-            print("token for profile is \(token). type of token - \(type(of: token))")
-            switch result {
-            case .success(let body):
-                print(body)
-                ProfileService.shared.profileData = body
-                self.profileImageService.fetchProfileImageURL(token: self.storage.token ?? "default token") {_ in }
-            case .failure(let error):
-                print(error)
-                assertionFailure("failed to fetch profile")
-                break
-            }
+        profileService.fetchProfile(token: token) { result in
             UIBlockingPorgressHUD.dismiss()
+            switch result {
+            case .success(let profile):
+                ProfileService.shared.profileData = profile
+                self.profileImageService.fetchProfileImageURL(token: self.storage.token ?? "default token") { _ in }
+            case .failure(let error):
+                if let urlResponse = error as? HTTPURLResponse, urlResponse.statusCode == 403 {
+                    self.showLimitExceededAlert()
+                } else {
+                    print("Error fetching profile: \(error)")
+                    assertionFailure("failed to fetch profile")
+                }
+            }
         }
+    }
+
+    
+    private func showLimitExceededAlert() {
+        let alert = UIAlertController(
+            title: "Ошибка",
+            message: "Превышен лимит запросов к Unsplash API",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Повторить", style: .default, handler: { [weak self] _ in
+            guard let token = self?.storage.token else { return }
+            self?.fetchProfile(token)
+        }))
+        present(alert, animated: true)
     }
 }
 
-extension SplashViewController: AuthViewControllerDelegate { //MARK: AuthViewControllerDelegate
+extension SplashViewController: AuthViewControllerDelegate {
     
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
         dismiss(animated: true) { [weak self] in
             UIBlockingPorgressHUD.show()
             guard let self = self else { return }
             self.fetchOAuthToken(code)
-            UIBlockingPorgressHUD.dismiss()
         }
     }
     
@@ -105,15 +116,13 @@ extension SplashViewController: AuthViewControllerDelegate { //MARK: AuthViewCon
         storage.removeAll()
         oauth2Service.fetchAuthToken(code) { [weak self] result in
             guard let self = self else { return }
+            UIBlockingPorgressHUD.dismiss()
             switch result {
             case .success:
                 self.switchToTabBarController()
             case .failure:
                 assertionFailure("Failed to fetch OAuth token!")
-                break
             }
         }
     }
 }
-
-

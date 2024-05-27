@@ -9,6 +9,8 @@ enum Constants {
 }
 
 let profileURL = URL(string: "https://api.unsplash.com/me")
+let photoURL = "https://api.unsplash.com/photos/"
+let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
 
 
 

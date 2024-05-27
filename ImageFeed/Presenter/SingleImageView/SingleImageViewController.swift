@@ -1,28 +1,83 @@
 import UIKit
+import Kingfisher
+import ProgressHUD
 
 final class SingleImageViewController: UIViewController {
-    var image: UIImage!
     
+    // MARK: - Public Properties
+    var imageURL: URL?
+    var fullImageURL: URL?
+    
+    //MARK: - IBOutlet
     
     @IBOutlet private weak var scrollView: UIScrollView!
+    @IBOutlet private weak var imageView: UIImageView!
+    
+    // MARK: - Lifecycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        scrollView.minimumZoomScale = 0.25
+        scrollView.maximumZoomScale = 1.25
+        scrollView.delegate = self
+        
+        loadImage()
+    }
+    // MARK: - IBAction
+    
     @IBAction private func clickBackButton(_ sender: Any) {
         dismiss(animated: true)
-    }
-    @IBAction private func tapShareButton(_ sender: Any) {
-        let share = UIActivityViewController(
-            activityItems: [image ?? UIImage()],
-            applicationActivities: nil)
-        
-        present(share, animated: true)
+        UIBlockingPorgressHUD.dismiss()
     }
     
-    @IBOutlet var imageView: UIImageView! {
-        
-        didSet {
-            guard isViewLoaded else { return }
-            imageView.image = image
-            rescaleAndCenterImageInScrollView(image: image)
+    @IBAction private func tapShareButton(_ sender: Any) {
+          let share = UIActivityViewController(
+              activityItems: [imageView ?? UIImage()],
+              applicationActivities: nil)
+          
+          present(share, animated: true)
+      }
+    
+    // MARK: - Private Methods
+    
+    private func loadImage() {
+        guard let url = fullImageURL else {
+            print("fullImageURL is nil")
+            return
         }
+        
+        showLoader()
+        imageView.kf.setImage(with: url, completionHandler: { [weak self] result in
+            self?.hideLoader()
+            switch result {
+            case .success(let value):
+                self?.rescaleAndCenterImageInScrollView(image: value.image)
+            case .failure(let error):
+                print("Error loading image: \(error)")
+                self?.showError()
+            }
+        })
+    }
+    
+    private func showLoader() {
+        UIBlockingPorgressHUD.show()
+    }
+    
+    private func hideLoader() {
+        UIBlockingPorgressHUD.dismiss()
+    }
+    
+    private func showError() {
+        let alert = UIAlertController(
+            title: "Ошибка",
+            message: "Что-то пошло не так. Попробовать ещё раз?",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Не надо", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Повторить", style: .default, handler: { [weak self] _ in
+            self?.loadImage()
+        }))
+        present(alert, animated: true)
     }
     
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
@@ -41,20 +96,9 @@ final class SingleImageViewController: UIViewController {
         let y = (newContentSize.height - visibleRectSize.height) / 2
         scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
     }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        imageView.image = image
-        
-        scrollView.minimumZoomScale = 0.25
-        scrollView.maximumZoomScale = 1.25
-        
-        rescaleAndCenterImageInScrollView(image: image)
-        
-    }
 }
 
+// MARK: - UIScrollViewDelegate
 extension SingleImageViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView

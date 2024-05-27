@@ -6,23 +6,6 @@ import SwiftKeychainWrapper
 
 final class ProfileViewContoller: UIViewController{
     
-    struct Profile {
-        var username: String
-        var name: String
-        var loginName: String
-        var bio: String
-    }
-    
-    override init(nibName: String?, bundle: Bundle?) {
-        super.init(nibName: nibName, bundle: bundle)
-        addObserver()
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        addObserver()
-    }
-    
     deinit {
         removeObserver()
     }
@@ -32,9 +15,10 @@ final class ProfileViewContoller: UIViewController{
     private let tokenStorage = OAuth2TokenStorage()
     private let profileService = ProfileService.shared
     private var profileImageServiceObserver: NSObjectProtocol?
+    private let logoutService = ProfileLogoutService.shared
     
     @objc private func didTapButton() {
-        //TODO: Доделать кнопку
+        showByeAlertAndLogout()
     }
     
     //MARK: - Lifecycle
@@ -62,7 +46,25 @@ final class ProfileViewContoller: UIViewController{
         updateAvatar()
     }
     
-    //MARK: - Functions
+    //MARK: - Private Functions
+    private func showByeAlertAndLogout() {
+        let alert = UIAlertController(
+            title: "Пока, пока!",
+            message: "Уверены, что хотите выйти?",
+            preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Да", style: .default, handler: { [weak self] _ in
+            self?.logoutService.logout()
+            self?.switchToInitialViewController()
+            
+        }))
+
+        alert.addAction(UIAlertAction(title: "Нет", style: .cancel, handler: { [weak self] _ in
+            self?.dismiss(animated: true)
+        }))
+
+        present(alert, animated: true)
+    }
+
     private func updateAvatar(){
         
         guard
@@ -77,16 +79,6 @@ final class ProfileViewContoller: UIViewController{
             placeholder: UIImage(named: "placeholder.jpeg"),
             options: [.processor(processor)])
         configureProfileImage(imageView: image)
-        
-        // TODO [Sprint 11] Обновитt аватар, используя Kingfisher
-    }
-    
-    private func addObserver() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(updateAvatar(notification:)),
-            name: ProfileImageService.didChangeNotification,
-            object: nil)
     }
     
     private func removeObserver() {
@@ -96,24 +88,12 @@ final class ProfileViewContoller: UIViewController{
             object: nil)
     }
     
-    @objc
-    private func updateAvatar(notification: Notification) { //MARK: Не используется
-        guard
-            isViewLoaded,
-            let userInfo = notification.userInfo,
-            let profileImageURL = userInfo["URL"] as? String,
-            let url = URL(string: profileImageURL) else { return }
-        
-    }
-    
     private func clearCache() {
         let cache = ImageCache.default
         cache.clearMemoryCache()
         cache.clearDiskCache()
     }
     
-    
-    //MARK: - Configure screen objects
     private func configureProfileImage(imageView: UIImageView) {
         imageView.tintColor = .gray
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -140,7 +120,7 @@ final class ProfileViewContoller: UIViewController{
         button.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16).isActive = true
     }
     
-    private func configureNameLabel(with text: ProfileService.Profile) {
+    private func configureNameLabel(with text: Profile) {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
@@ -152,7 +132,7 @@ final class ProfileViewContoller: UIViewController{
         label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
     }
     
-    private func configureNickname(with text: ProfileService.Profile) {
+    private func configureNickname(with text: Profile) {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
@@ -163,7 +143,7 @@ final class ProfileViewContoller: UIViewController{
         label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
     }
     
-    private func configureDescription(with text: ProfileService.Profile) {
+    private func configureDescription(with text: Profile) {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
@@ -174,10 +154,17 @@ final class ProfileViewContoller: UIViewController{
         label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 170).isActive = true
     }
     
-    private func configureUIWithProfileData(data: ProfileService.Profile) {
+    private func configureUIWithProfileData(data: Profile) {
         configureNickname(with: data)
         configureDescription(with: data)
         configureNameLabel(with: data)
     }
+    
+    private func switchToInitialViewController() {
+            guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
+            let splash = SplashViewController()
+            splash.modalPresentationStyle = .fullScreen
+            window.rootViewController = splash
+        }
     
 }
