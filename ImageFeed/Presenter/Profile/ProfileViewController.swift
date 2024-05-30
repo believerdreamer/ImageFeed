@@ -5,19 +5,21 @@ import SwiftKeychainWrapper
 //MARK:  - UIViewController
 
 protocol ProfileViewControllerProtocol: AnyObject {
-    func updateAvatar()
+    func updateAvatar(url: String?)
     func updateProfileData(data: Profile)
+    func clearCache()
 }
 
 final class ProfileViewContoller: UIViewController, ProfileViewControllerProtocol{
-    
-    
+
     //MARK: - Properties
     private let userDefaults = UserDefaults.standard
     private let tokenStorage = OAuth2TokenStorage()
     private let profileService = ProfileService.shared
+    private let profileImageService = ProfileImageService.shared
     private var profileImageServiceObserver: NSObjectProtocol?
     private let logoutService = ProfileLogoutService.shared
+    lazy var presenter = ProfilePresenter(view: self)
     
     @objc private func didTapButton() {
         showByeAlertAndLogout()
@@ -27,29 +29,9 @@ final class ProfileViewContoller: UIViewController, ProfileViewControllerProtoco
     override func viewDidLoad() {
         view.backgroundColor = UIColor(named: "YPBlack")
         super.viewDidLoad()
-        clearCache()
-        updateAvatar()
+        presenter.viewDidLoad()
         addSubViews()
         applyConstraints()
-        guard let profileData = profileService.profileData else {
-            return
-        }
-        updateProfileData(data: profileData)
-        guard let profileData = profileService.profileData else {
-            assertionFailure("profile data in ProfileViewController is nil")
-            return
-        }
-        
-        profileImageServiceObserver = NotificationCenter.default
-            .addObserver(
-                forName: ProfileImageService.didChangeNotification,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                guard let self = self else { return }
-                self.updateAvatar()
-            }
-        updateAvatar()
     }
     
     //MARK: - Private Functions
@@ -74,21 +56,17 @@ final class ProfileViewContoller: UIViewController, ProfileViewControllerProtoco
         present(alert, animated: true)
     }
     
-    internal func updateAvatar(){
+    internal func updateAvatar(url: String?){
         profileImage.kf.indicatorType = .activity
         guard
             let profileImageURL = ProfileImageService.shared.avatarURL,
             let url = URL(string: profileImageURL) else { return }
         profileImage.kf.setImage(with: url, placeholder: UIImage(named: "avatar_placeholder"))
-        let cache = ImageCache.default
-        cache.clearMemoryCache()
-        cache.clearDiskCache()
+        clearCache()
     }
     
-    private func clearCache() {
-        let cache = ImageCache.default
-        cache.clearMemoryCache()
-        cache.clearDiskCache()
+    internal func clearCache() {
+        presenter.clearCache()
     }
     
     private func addSubViews(){
@@ -158,13 +136,13 @@ final class ProfileViewContoller: UIViewController, ProfileViewControllerProtoco
     private var logoutButton: UIButton = {
         let button = UIButton.systemButton(
             with: UIImage(systemName: "ipad.and.arrow.forward")!,
-            target: ProfileViewContoller.self,
+            target: self,
             action: #selector(didTapButton))
         button.tintColor = UIColor(named: "YPRed")
         return button
     }()
     
-    internal func updateProfileData(data: Profile) {
+    func updateProfileData(data: Profile) {
         guard let profile = profileService.profileData else {
             assertionFailure("Profile is doesnt exist")
             return
