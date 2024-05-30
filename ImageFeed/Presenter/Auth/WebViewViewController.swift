@@ -36,6 +36,7 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
+        
         super.viewDidLoad()
         webView.navigationDelegate = self
         estimatedProgressObservation = webView.observe(

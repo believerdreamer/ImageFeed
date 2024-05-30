@@ -1,15 +1,12 @@
-//
-//  ImagesListPresenter.swift
-//  ImageFeed
-//
-//  Created by Архип Семёнов on 30.05.2024.
-//
-
 import UIKit
 import Kingfisher
 
 protocol ImagesListPresenterProtocol {
     var view: ImagesListViewControllerProtocol? { get set }
+    func likeButtonTapped(_ sender: UIButton)
+    func fetchPhotosNextPage()
+    func clearCache()
+    func formatDate() -> DateFormatter
 }
 
 final class ImagesListPresenter: ImagesListPresenterProtocol {
@@ -20,7 +17,7 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
         self.view = view
     }
     
-    @objc func likeButtonTapped(_ sender: UIButton) {
+    func likeButtonTapped(_ sender: UIButton) {
         guard let cell = sender.superview?.superview as? ImagesListCell,
               let indexPath = view?.tableView.indexPath(for: cell) else {
             return
@@ -42,6 +39,10 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
                 }
             }
         }
+    }
+    
+    func fetchPhotosNextPage() {
+        imageListService.fetchPhotosNextPage { _ in }
     }
     
     func clearCache() {

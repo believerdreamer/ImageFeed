@@ -17,7 +17,7 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
     private let ShowSingleImageViewIdentifier = "ShowSingleImage"
     private var isLoadingNextPage = false
     private var imageListService = ImageListService.shared
-    private lazy var presenter = ImagesListPresenter(view: self)
+    lazy var presenter = ImagesListPresenter(view: self)
     
     private lazy var dateFormatter: DateFormatter = {
         presenter.formatDate()
