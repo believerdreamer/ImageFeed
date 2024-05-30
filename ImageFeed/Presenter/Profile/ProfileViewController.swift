@@ -57,11 +57,10 @@ final class ProfileViewContoller: UIViewController, ProfileViewControllerProtoco
     }
     
     internal func updateAvatar(url: String?){
-        profileImage.kf.indicatorType = .activity
         guard
             let profileImageURL = ProfileImageService.shared.avatarURL,
             let url = URL(string: profileImageURL) else { return }
-        profileImage.kf.setImage(with: url, placeholder: UIImage(named: "avatar_placeholder"))
+        profileImage.kf.setImage(with: url, placeholder: UIImage(named: "placeholder_profile"))
         clearCache()
     }
     
