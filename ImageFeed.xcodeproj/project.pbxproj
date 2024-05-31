@@ -16,6 +16,9 @@
 		98480C1C2C09D80500823907 /* ProfileViewPresenterSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98480C1B2C09D80500823907 /* ProfileViewPresenterSpy.swift */; };
 		98480C1E2C09DAC700823907 /* ProfileViewControllerSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98480C1D2C09DAC700823907 /* ProfileViewControllerSpy.swift */; };
 		98480C202C09DB6400823907 /* ProfileViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98480C1F2C09DB6400823907 /* ProfileViewTests.swift */; };
+		98480C222C09F08C00823907 /* ImageListViewPresenterSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98480C212C09F08C00823907 /* ImageListViewPresenterSpy.swift */; };
+		98480C242C09F17500823907 /* ImageListViewControllerSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98480C232C09F17500823907 /* ImageListViewControllerSpy.swift */; };
+		98480C262C09F29600823907 /* ImageListViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98480C252C09F29600823907 /* ImageListViewTests.swift */; };
 		984C5F692A73E87500A2E939 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 984C5F682A73E87500A2E939 /* AppDelegate.swift */; };
 		984C5F722A73E87700A2E939 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 984C5F712A73E87700A2E939 /* Assets.xcassets */; };
 		984F63452BE547A400F73C52 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 984F63442BE547A400F73C52 /* Kingfisher */; };
@@ -77,6 +80,9 @@
 		98480C1B2C09D80500823907 /* ProfileViewPresenterSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewPresenterSpy.swift; sourceTree = "<group>"; };
 		98480C1D2C09DAC700823907 /* ProfileViewControllerSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewControllerSpy.swift; sourceTree = "<group>"; };
 		98480C1F2C09DB6400823907 /* ProfileViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewTests.swift; sourceTree = "<group>"; };
+		98480C212C09F08C00823907 /* ImageListViewPresenterSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageListViewPresenterSpy.swift; sourceTree = "<group>"; };
+		98480C232C09F17500823907 /* ImageListViewControllerSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageListViewControllerSpy.swift; sourceTree = "<group>"; };
+		98480C252C09F29600823907 /* ImageListViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageListViewTests.swift; sourceTree = "<group>"; };
 		984C5F652A73E87500A2E939 /* ImageFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		984C5F682A73E87500A2E939 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		984C5F712A73E87700A2E939 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -146,6 +152,9 @@
 				984055DD2C04CB680006F4DC /* WebViewTests.swift */,
 				98480C1B2C09D80500823907 /* ProfileViewPresenterSpy.swift */,
 				98480C1D2C09DAC700823907 /* ProfileViewControllerSpy.swift */,
+				98480C212C09F08C00823907 /* ImageListViewPresenterSpy.swift */,
+				98480C232C09F17500823907 /* ImageListViewControllerSpy.swift */,
+				98480C252C09F29600823907 /* ImageListViewTests.swift */,
 				98480C1F2C09DB6400823907 /* ProfileViewTests.swift */,
 			);
 			path = ImageFeedTests;
@@ -441,10 +450,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				98480C242C09F17500823907 /* ImageListViewControllerSpy.swift in Sources */,
 				98480C202C09DB6400823907 /* ProfileViewTests.swift in Sources */,
 				98480C1C2C09D80500823907 /* ProfileViewPresenterSpy.swift in Sources */,
 				984055DE2C04CB690006F4DC /* WebViewTests.swift in Sources */,
 				98480C1E2C09DAC700823907 /* ProfileViewControllerSpy.swift in Sources */,
+				98480C262C09F29600823907 /* ImageListViewTests.swift in Sources */,
+				98480C222C09F08C00823907 /* ImageListViewPresenterSpy.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

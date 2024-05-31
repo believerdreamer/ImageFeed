@@ -21,12 +21,13 @@ class Image_FeedUITests: XCTestCase {
         
         loginTextField.tap()
         loginTextField.typeText("liteplay03@ya.ru")
+        sleep(1)
         app.buttons["Done"].tap()
         XCTAssertTrue(loginTextField.waitForExistence(timeout: 5))
-        
+        sleep(1)
         let passwordTextField = webView.descendants(matching: .secureTextField).element
         XCTAssertTrue(passwordTextField.waitForExistence(timeout: 5))
-        
+        sleep(1)
         passwordTextField.tap()
         passwordTextField.typeText("Z4IAWNdwpk_@")
         app.buttons["Done"].tap()
@@ -34,7 +35,7 @@ class Image_FeedUITests: XCTestCase {
         sleep(1)
         
         webView.webViews.buttons["Login"].tap()
-        
+        sleep(5)
         let tablesQuery = app.tables
         let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
         
