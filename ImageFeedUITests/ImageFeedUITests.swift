@@ -20,7 +20,7 @@ class Image_FeedUITests: XCTestCase {
         XCTAssertTrue(loginTextField.waitForExistence(timeout: 5))
         
         loginTextField.tap()
-        loginTextField.typeText("liteplay03@ya.ru")
+        loginTextField.typeText("login")
         sleep(1)
         app.buttons["Done"].tap()
         XCTAssertTrue(loginTextField.waitForExistence(timeout: 5))
@@ -29,7 +29,7 @@ class Image_FeedUITests: XCTestCase {
         XCTAssertTrue(passwordTextField.waitForExistence(timeout: 5))
         sleep(1)
         passwordTextField.tap()
-        passwordTextField.typeText("Z4IAWNdwpk_@")
+        passwordTextField.typeText("password")
         app.buttons["Done"].tap()
         XCTAssertTrue(passwordTextField.waitForExistence(timeout: 5))
         sleep(1)
