@@ -19,7 +19,7 @@ final class ProfileViewContoller: UIViewController, ProfileViewControllerProtoco
     private let profileImageService = ProfileImageService.shared
     private var profileImageServiceObserver: NSObjectProtocol?
     private let logoutService = ProfileLogoutService.shared
-    lazy var presenter = ProfilePresenter(view: self)
+    lazy var presenter: ProfilePresenterProtocol = ProfilePresenter(view: self)
     
     @objc private func didTapButton() {
         showByeAlertAndLogout()
@@ -108,7 +108,7 @@ final class ProfileViewContoller: UIViewController, ProfileViewControllerProtoco
         return profileImage
     }()
     
-    private var nameLabel: UILabel = {
+    var nameLabel: UILabel = {
         let label = UILabel()
         label.text = "Екатерина Новикова"
         label.font = UIFont.systemFont(ofSize: 23, weight: .bold)
@@ -116,7 +116,7 @@ final class ProfileViewContoller: UIViewController, ProfileViewControllerProtoco
         return label
     }()
     
-    private var nickname: UILabel = {
+    var nickname: UILabel = {
         let label = UILabel()
         label.text = "Екатерина Новикова"
         label.font = UIFont.systemFont(ofSize: 13)
@@ -124,7 +124,7 @@ final class ProfileViewContoller: UIViewController, ProfileViewControllerProtoco
         return label
     }()
     
-    private var descriptionLabel: UILabel = {
+    var descriptionLabel: UILabel = {
         let label = UILabel()
         label.text = "Hello, world!"
         label.font = UIFont.systemFont(ofSize: 13)
@@ -132,7 +132,7 @@ final class ProfileViewContoller: UIViewController, ProfileViewControllerProtoco
         return label
     }()
     
-    private var logoutButton: UIButton = {
+    var logoutButton: UIButton = {
         let button = UIButton.systemButton(
             with: UIImage(systemName: "ipad.and.arrow.forward")!,
             target: self,

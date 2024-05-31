@@ -6,6 +6,7 @@ protocol ProfilePresenterProtocol: AnyObject {
     var profile: Profile? { get }
     var avatarURL: String? { get }
     
+    func clearCache()
     func viewDidLoad()
 }
 
@@ -29,10 +30,7 @@ final class ProfilePresenter: ProfilePresenterProtocol {
     
     func viewDidLoad() {
         clearCache()
-        guard let profileData = profileService.profileData else {
-            assertionFailure("profile data in ProfilePresenter is nil")
-            return
-        }
+        guard let profileData = profileService.profileData else {return}
         guard let profileImageURL = profileImageService.avatarURL else { return }
         view?.updateAvatar(url: profileImageURL)
         view?.updateProfileData(data: profileData)
