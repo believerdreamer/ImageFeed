@@ -8,9 +8,6 @@
 import XCTest
 @testable import ImageFeed
 
-import XCTest
-@testable import ImageFeed
-
 final class ImageListViewControllerSpy: ImagesListViewControllerProtocol {
     var presenter: ImagesListPresenterProtocol?
     var photos: [Photo] = []

@@ -56,7 +56,7 @@ final class ProfileViewContoller: UIViewController, ProfileViewControllerProtoco
         present(alert, animated: true)
     }
     
-    internal func updateAvatar(url: String?){
+    func updateAvatar(url: String?){
         guard
             let profileImageURL = ProfileImageService.shared.avatarURL,
             let url = URL(string: profileImageURL) else { return }
@@ -64,7 +64,7 @@ final class ProfileViewContoller: UIViewController, ProfileViewControllerProtoco
         clearCache()
     }
     
-    internal func clearCache() {
+    func clearCache() {
         presenter.clearCache()
     }
     
@@ -108,7 +108,7 @@ final class ProfileViewContoller: UIViewController, ProfileViewControllerProtoco
         return profileImage
     }()
     
-    var nameLabel: UILabel = {
+    private var nameLabel: UILabel = {
         let label = UILabel()
         label.text = "Екатерина Новикова"
         label.font = UIFont.systemFont(ofSize: 23, weight: .bold)
@@ -116,7 +116,7 @@ final class ProfileViewContoller: UIViewController, ProfileViewControllerProtoco
         return label
     }()
     
-    var nickname: UILabel = {
+    private var nickname: UILabel = {
         let label = UILabel()
         label.text = "Екатерина Новикова"
         label.font = UIFont.systemFont(ofSize: 13)
@@ -124,7 +124,7 @@ final class ProfileViewContoller: UIViewController, ProfileViewControllerProtoco
         return label
     }()
     
-    var descriptionLabel: UILabel = {
+    private var descriptionLabel: UILabel = {
         let label = UILabel()
         label.text = "Hello, world!"
         label.font = UIFont.systemFont(ofSize: 13)
@@ -132,7 +132,7 @@ final class ProfileViewContoller: UIViewController, ProfileViewControllerProtoco
         return label
     }()
     
-    var logoutButton: UIButton = {
+    private var logoutButton: UIButton = {
         let button = UIButton.systemButton(
             with: UIImage(systemName: "ipad.and.arrow.forward")!,
             target: self,
