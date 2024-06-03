@@ -1,6 +1,5 @@
 import Foundation
 
-
 struct AuthConfiguration {
     
     static var standart: AuthConfiguration {
