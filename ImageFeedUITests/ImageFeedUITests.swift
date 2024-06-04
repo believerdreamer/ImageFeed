@@ -9,6 +9,8 @@ class Image_FeedUITests: XCTestCase {
     }
     
     func testAuth() throws {
+        var login: String = "your login"
+        var password: String = "your password"
         
         app.buttons["Authenticate"].tap()
         
@@ -20,7 +22,7 @@ class Image_FeedUITests: XCTestCase {
         XCTAssertTrue(loginTextField.waitForExistence(timeout: 5))
         
         loginTextField.tap()
-        loginTextField.typeText("login")
+        loginTextField.typeText(login)
         sleep(1)
         app.buttons["Done"].tap()
         XCTAssertTrue(loginTextField.waitForExistence(timeout: 5))
@@ -29,7 +31,7 @@ class Image_FeedUITests: XCTestCase {
         XCTAssertTrue(passwordTextField.waitForExistence(timeout: 5))
         sleep(1)
         passwordTextField.tap()
-        passwordTextField.typeText("password")
+        passwordTextField.typeText(password)
         app.buttons["Done"].tap()
         XCTAssertTrue(passwordTextField.waitForExistence(timeout: 5))
         sleep(1)
@@ -46,7 +48,7 @@ class Image_FeedUITests: XCTestCase {
         let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
         cell.swipeUp()
         sleep(5)
-        let cellToLike = tablesQuery.children(matching: .cell).element(boundBy: 0)
+        let cellToLike = tablesQuery.children(matching: .cell).element(boundBy: 1)
         cellToLike.buttons["LikeButton"].tap()
         sleep(5)
         cellToLike.buttons["LikeButton"].tap()
