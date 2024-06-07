@@ -1,6 +1,7 @@
 import UIKit
 import WebKit
 
+
 final class ProfileLogoutService {
     
     // MARK: - Publuc Properties
@@ -25,7 +26,7 @@ final class ProfileLogoutService {
         storage.removeToken()
         cleanCookies()
         imageListService.photos.removeAll()
-        profileImageService.avatarURL = " "
+        profileImageService.avatarURL = "" 
         profileSevice.profileData = nil
     }
     
